@@ -10,6 +10,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ## R Markdown
 
 ```{r}
+# documentacio matriu https://www.wormatlas.org/neuronalwiring.html#NeuronalconnectivityII
+
 archiu <- read.csv("NeuronConnect.csv",sep = ";")
 
 
