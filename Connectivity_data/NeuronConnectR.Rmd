@@ -8,6 +8,10 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## R Markdown
+```{r}
+library("igraph")
+library("plyr")
+```
 
 ```{r}
 # documentacio matriu https://www.wormatlas.org/neuronalwiring.html#NeuronalconnectivityII
@@ -36,5 +40,9 @@ for (i in 1:ab) {
     archiu <- rbind.fill(archiu,archiu[i,])
   }
 }
+```
+
+```{r}
+graph1 <- graph_from_edgelist(archiu, directed = TRUE)
 ```
 
