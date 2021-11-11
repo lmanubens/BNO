@@ -43,6 +43,6 @@ for (i in 1:ab) {
 ```
 
 ```{r}
-graph1 <- graph_from_edgelist(archiu, directed = TRUE)
+graph1 <- graph_from_edgelist(archiu[,c(1,2,4)], directed = TRUE)
 ```
 
