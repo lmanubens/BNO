@@ -1,6 +1,8 @@
 ---
 title: "NeuronConnect_R"
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -18,7 +20,6 @@ library("plyr")
 # documentacio igraph https://kateto.net/netscix2016.html
 
 archiu <- read.csv("NeuronConnect.csv",sep = ";")
-
 
 unique(archiu$Type)
 
@@ -49,5 +50,456 @@ g <- graph_from_edgelist(as.matrix(archiu[,c(1,2)]), directed = TRUE)
 E(g)$weight <- archiu$Nbr
 E(g)$name <- archiu$Type
 
+```
+
+```{r}
+gs <- simplify( g , remove.multiple = T, remove.loops = F, edge.attr.comb=c(weight="sum", type="ignore") )
+```
+
+```{r}
+l <- layout_with_fr(gs)
+plot(gs, rescale=F, layout=l*0.4)
+```
+
+```{r}
+l <- layout_with_fr(gs)
+
+V(gs)$color <- colrs[V(gs)$media.type]
+
+V(gs)$size <- V(gs)$audience.size*0.7
+
+V(gs)$label.color <- "black"
+
+V(gs)$label <- NA
+
+E(gs)$width <- E(gs)$weight/6
+
+E(gs)$arrow.size <- .2
+
+E(gs)$width <- 1+E(gs)$weight/12
+
+plot(gs,rescale=F,layout=l*0.8)
+```
+
+
+```{r}
+
+barplot(triad_census(gs), log="y")
+```
+
+```{r}
+#Color nodes along the diameter:
+
+
+
+diam <- get_diameter(gs, directed=T)
+
+as.vector(diam)
+
+vcol <- rep("gray40", vcount(gs))
+
+vcol[diam] <- "gold"
+
+ecol <- rep("gray80", ecount(gs))
+
+ecol[E(gs, path=diam)] <- "orange" 
+
+
+plot(gs, rescale=F,vertex.color=vcol, edge.color=ecol, edge.arrow.mode=0)
+```
+
+```{r}
+
+
+```
+
+```{r}
+#Hubs
+hs <- hub_score(gs, weights=NA)$vector
+
+
+
+
+par(mfrow=c(1,2))
+
+ plot(gs,rescale=F, vertex.size=hs*50, main="Hubs")
+
+```
+
+```{r}
+#Authorities
+
+as <- authority_score(gs, weights=NA)$vector
+
+
+
+par(mfrow=c(1,2))
+
+```
+
+```{r}
+#Distances and paths
+#Longitud de ruta promedio: la media de la distancia más corta entre cada par de nodos en la red (en ambas direcciones para gráficos dirigidos).
+
+mean_distance(gs, directed=F)
+mean_distance(gs, directed=T)
+
+
+```
+
+```{r}
+#encontrar el camino más corto entre nodos específicos.
+
+news.path <- shortest_paths(gs, 
+
+                            from = V(gs)[as.list(names)=="ADFL"], 
+
+                             to  = V(gs)[as.list(names)=="SMBVR"],
+
+                             output = "both") # both path nodes and edges
+
+
+
+# Generate edge color variable to plot the path:
+
+ecol <- rep("gray80", ecount(gs))
+
+ecol[unlist(news.path$epath)] <- "orange"
+
+# Generate edge width variable to plot the path:
+
+ew <- rep(2, ecount(gs))
+
+ew[unlist(news.path$epath)] <- 4
+
+# Generate node color variable to plot the path:
+
+vcol <- rep("gray40", vcount(gs))
+
+vcol[unlist(news.path$vpath)] <- "gold"
+
+
+
+plot(gs,rescale=F, vertex.color=vcol, edge.color=ecol, 
+
+     edge.width=ew, edge.arrow.mode=0)
+```
+
+```{r}
+inc.edges <- incident(gs,  V(gs)[media=="ADFL"], mode="all")
+
+
+
+# Set colors to plot the selected edges.
+
+ecol <- rep("gray80", ecount(gs))
+
+ecol[inc.edges] <- "orange"
+
+vcol <- rep("grey40", vcount(gs))
+
+vcol[V(gs)$media=="ADFL"] <- "gold"
+
+plot(gs,rescale=F, vertex.color=vcol, edge.color=ecol)
+```
+
+```{r}
+cocitation(gs)
+```
+
+```{r}
+#comunidades
+ceb <- cluster_edge_betweenness(gs) 
+
+plot(ceb, gs) 
+```
+
+```{r}
+cfg <- cluster_fast_greedy(as.undirected(gs))
+
+plot(cfg, as.undirected(gs))
+
+l <- layout_with_fr(gs)
+
+plot(cfg, resacle=F, as.undirected(gs), layout=l*1.0)
+
+```
+
+
+
+
+##-------------------------------------------------------------------------------------------------------------------
+```{r}
+#Degree distribution
+
+
+plot(gs, vertex.size=6, vertex.label=NA, layout=layout_in_circle)  
+
+
+deg <- degree(gs, mode="all")
+
+deg.distF <- degree_distribution(gs, cumulative=F, mode="all")
+
+plot( x=0:max(deg), y=deg.distF, pch=19, cex=1.2, col="orange", 
+       log='y',
+
+      xlab="Degree", ylab="Log Frequency")
+
+deg.distT <- degree_distribution(gs, cumulative=T, mode="all")
+
+plot( x=0:max(deg), y=1-deg.distT, pch=19, cex=1.2, col="orange", 
+
+      xlab="Degree", ylab="Cumulative Frequency")
+```
+
+
+# ---GENERAR 3 XARXES ALEATORIES PER COMPARAR---
+
+## Erdos-Renyi random graph model
+
+```{r}
+set.seed(2706)
+
+er_xarxa1 <- sample_gnm(n=283, m=3109) 
+plot(er_xarxa1, vertex.size=6, vertex.label=NA, layout=layout_in_circle)  
+
+
+deg_xarxa1 <- degree(er_xarxa1, mode="all")
+
+
+
+deg.dist_xarxaF1 <- degree_distribution(er_xarxa1, cumulative=F, mode="all")
+
+plot( x=0:max(deg_xarxa1), y=deg.dist_xarxaF1, pch=19, cex=1.2, col="blue", 
+       log='y',
+
+      xlab="Degree", ylab="Log Frequency")
+
+
+deg.dist_xarxaT1 <- degree_distribution(er_xarxa1, cumulative=T, mode="all")
+
+plot( x=0:max(deg_xarxa1), y=1-deg.dist_xarxaT1, pch=19, cex=1.2, col="blue", 
+
+      xlab="Degree", ylab="Cumulative Frequency")
+```
+
+## Watts-Strogatz small-world model
+
+```{r}
+sw_xarxa2 <- sample_smallworld(dim=1, size=283, nei=11, p=0.1)
+plot(sw_xarxa2, vertex.size=6, vertex.label=NA, layout=layout_in_circle)
+
+
+deg_xarxa2 <- degree(sw_xarxa2, mode="all")
+
+
+
+deg.dist_xarxaF2 <- degree_distribution(sw_xarxa2, cumulative=F, mode="all")
+
+plot( x=0:max(deg_xarxa2), y=deg.dist_xarxaF2, pch=19, cex=1.2, col="blue", 
+       log='y',
+
+      xlab="Degree", ylab="Log Frequency")
+
+
+deg.dist_xarxaT2 <- degree_distribution(sw_xarxa2, cumulative=T, mode="all")
+
+plot( x=0:max(deg_xarxa2), y=1-deg.dist_xarxaT2, pch=19, cex=1.2, col="blue", 
+
+      xlab="Degree", ylab="Cumulative Frequency")
+
+
+```
+
+## Barabasi-Albert preferential attachment model for scale-free graphs
+
+```{r}
+ba_xarxa3 <-  sample_pa(n=283, power=1, m=11,  directed=T)
+plot(ba_xarxa3, vertex.size=6, vertex.label=NA, layout=layout_in_circle)
+
+
+deg_xarxa3 <- degree(ba_xarxa3, mode="all")
+
+
+deg.dist_xarxaF3 <- degree_distribution(ba_xarxa3, cumulative=F, mode="all")
+
+plot( x=0:max(deg_xarxa3), y=deg.dist_xarxaF3, pch=19, cex=1.2, col="blue", 
+       log='y',
+
+      xlab="Degree", ylab="Log Frequency")
+
+
+deg.dist_xarxaT3 <- degree_distribution(ba_xarxa3, cumulative=T, mode="all")
+
+plot( x=0:max(deg_xarxa3), y=1-deg.dist_xarxaT3, pch=19, cex=1.2, col="blue", 
+
+      xlab="Degree", ylab="Cumulative Frequency")
+
+```
+
+
+```{r}
+df_plot1 <- data.frame(deg=rep(0:max(deg),4),
+                       freq=c(1-deg.distT,
+                              c(1-deg.dist_xarxaT1,rep(1,max(deg)-max(deg_xarxa1))),
+                              c(1-deg.dist_xarxaT2,rep(1,max(deg)-max(deg_xarxa2))),
+                              c(1-deg.dist_xarxaT3[0:(max(deg)+1)])
+                              ),
+                       type=c(rep("c.elegans",max(deg)+1),
+                              rep("Erdös-Renyi",max(deg)+1),
+                              rep("Small-World",max(deg)+1),
+                              rep("Barabasi-Alberts",max(deg)+1)
+                              )
+                       )
+
+library(ggplot2)
+ggplot(df_plot1, aes(x=deg,y=freq,color=type)) + geom_point()
+```
+
+```{r}
+df_plot2 <- data.frame(deg=rep(0:max(deg),4),
+                       freq=c(deg.distF,
+                              c(deg.dist_xarxaF1,rep(0,max(deg)-max(deg_xarxa1))),
+                              c(deg.dist_xarxaF2,rep(0,max(deg)-max(deg_xarxa2))),
+                              c(deg.dist_xarxaF3[0:(max(deg)+1)])
+                              ),
+                       type=c(rep("c.elegans",max(deg)+1),
+                              rep("Erdös-Renyi",max(deg)+1),
+                              rep("Small-World",max(deg)+1),
+                              rep("Barabasi-Alberts",max(deg)+1)
+                              )
+                       )
+
+library(ggplot2)
+ggplot(df_plot2, aes(x=deg,y=freq,color=type)) + 
+  geom_point() + 
+  scale_y_log10() + 
+  scale_x_log10(limits=c(5,100)) +
+  geom_smooth(aes(fill=type)) +
+  theme_classic()
+
+```
+
+#--------------------------------------------------------------------------------------------------------------------
+
+
+
+
+```{r}
+archiuFly <- read.csv("v1.2_exported-traced-adjacencies-v1.2.csv",sep = ",",header = F,skip = 1)
+
+```
+
+```{r}
+# archiuFly[,1] <- as.numeric(as.factor(archiuFly[,1]))
+# archiuFly[,2] <- as.numeric(as.factor(archiuFly[,2]))
+# archiuFly[,3] <- as.numeric(as.factor(archiuFly[,3]))
+# gFly <- graph_from_edgelist(as.matrix(archiuFly[,c(1,2)]), directed = TRUE)
+# 
+# gFlyS <- simplify( gFly , remove.multiple = T, remove.loops = F, edge.attr.comb=c(weight="sum", type="ignore") )
+# 
+# save(gFlyS, file="gFlyS.RData")
+
+load("gFlyS.RData")
+
+```
+
+```{r}
+#l <- layout_with_fr(gFlyS)
+#plot(gFlyS, rescale=F, layout=l*0.4)
+```
+
+```{r}
+#Degree distribution
+
+#plot(gFlyS, vertex.size=6, vertex.label=NA, layout=layout_in_circle)
+
+degFly <- degree(gFlyS, mode="all")
+
+deg.degFlyF <- degree_distribution(gFlyS, cumulative=F, mode="all")
+
+plot( x=0:max(degFly), y=deg.degFlyF, pch=19, cex=1.2, col="orange", 
+       log='y',
+
+      xlab="Degree", ylab="Log Frequency")
+
+deg.degFlyT <- degree_distribution(gFlyS, cumulative=T, mode="all")
+
+plot( x=0:max(degFly), y=1-deg.degFlyT, pch=19, cex=1.2, col="orange", 
+
+      xlab="Degree", ylab="Cumulative Frequency")
+```
+
+```{r}
+set.seed(2706)
+
+er_Fly <- sample_gnm(n=length(unique(archiuFly[,1])), m=length(E(gFlyS))) #n= NUmero de nodes (unique(archiuFly[,1])) m=numero de links (length(E(gFlyS)))
+#plot(er_Fly, vertex.size=6, vertex.label=NA, layout=layout_in_circle)  
+
+
+deg_erFly <- degree(er_Fly, mode="all")
+
+
+
+deg.dist_erFlyF <- degree_distribution(er_Fly, cumulative=F, mode="all")
+
+plot( x=0:max(deg_erFly), y=deg.dist_erFlyF, pch=19, cex=1.2, col="blue", 
+       log='y',
+
+      xlab="Degree", ylab="Log Frequency")
+
+
+deg.dist_erFlyT <- degree_distribution(er_Fly, cumulative=T, mode="all")
+
+plot( x=0:max(deg_erFly), y=1-deg.dist_erFlyT, pch=19, cex=1.2, col="blue", 
+
+      xlab="Degree", ylab="Cumulative Frequency")
+```
+
+```{r}
+sw_Fly <- sample_smallworld(dim=1, size=length(unique(archiuFly[,1])), nei=11, p=0.1)
+#plot(sw_Fly, vertex.size=6, vertex.label=NA, layout=layout_in_circle)
+
+
+deg_swFly <- degree(sw_Fly, mode="all")
+
+
+
+deg.dist_swFlyF <- degree_distribution(sw_Fly, cumulative=F, mode="all")
+
+plot( x=0:max(deg_swFly), y=deg.dist_swFlyF, pch=19, cex=1.2, col="blue", 
+       log='y',
+
+      xlab="Degree", ylab="Log Frequency")
+
+
+deg.dist_swFlyT <- degree_distribution(sw_Fly, cumulative=T, mode="all")
+
+plot( x=0:max(deg_swFly), y=1-deg.dist_swFlyT, pch=19, cex=1.2, col="blue", 
+
+      xlab="Degree", ylab="Cumulative Frequency")
+```
+
+```{r}
+ba_fly <-  sample_pa(n=length(unique(archiuFly[,1])), power=1, m=11,  directed=T)
+#plot(ba_fly, vertex.size=6, vertex.label=NA, layout=layout_in_circle)
+
+
+deg_baFly <- degree(ba_fly, mode="all")
+
+
+deg.dist_baFlyF <- degree_distribution(ba_fly, cumulative=F, mode="all")
+
+plot( x=0:max(deg_baFly), y=deg.dist_baFlyF, pch=19, cex=1.2, col="blue", 
+       log='y',
+
+      xlab="Degree", ylab="Log Frequency")
+
+
+deg.dist_baFyT <- degree_distribution(ba_fly, cumulative=T, mode="all")
+
+plot( x=0:max(deg_baFly), y=1-deg.dist_baFyT, pch=19, cex=1.2, col="blue", 
+
+      xlab="Degree", ylab="Cumulative Frequency")
 ```
 

@@ -1,0 +1,29 @@
+{
+    "id": "1DC2424D",
+    "path": "C:/Users/hecto/OneDrive/Escritorio/Connectivity_data/NeuronConnectR.Rmd",
+    "project_path": "NeuronConnectR.Rmd",
+    "type": "r_markdown",
+    "hash": "396684530",
+    "contents": "",
+    "dirty": false,
+    "created": 1636384190095.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "86,0",
+        "scrollLine": "60",
+        "last_setup_crc32": "",
+        "chunk_output_type": "console"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1643123280,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1643123280952,
+    "read_only": false,
+    "read_only_alternatives": []
+}
