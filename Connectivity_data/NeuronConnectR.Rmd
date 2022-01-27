@@ -283,6 +283,26 @@ plot( x=0:max(deg_xarxa1), y=1-deg.dist_xarxaT1, pch=19, cex=1.2, col="blue",
       xlab="Degree", ylab="Cumulative Frequency")
 ```
 
+```{r}
+tirad_er_xarxa1 = barplot(triad_census(er_xarxa1), log="y")
+tirad_er_xarxa1
+```
+
+```{r}
+#Hubs
+hs_er_xarxa1 <- hub_score(er_xarxa1, weights=NA)$vector
+hs_er_xarxa1
+
+```
+
+```{r}
+#Authorities
+as_er_xarxa1 <- authority_score(er_xarxa1, weights=NA)$vector
+as_er_xarxa1
+
+```
+
+
 ## Watts-Strogatz small-world model
 
 ```{r}
@@ -311,6 +331,27 @@ plot( x=0:max(deg_xarxa2), y=1-deg.dist_xarxaT2, pch=19, cex=1.2, col="blue",
 
 ```
 
+```{r}
+tirad_sw_xarxa2 = barplot(triad_census(sw_xarxa2), log="y")
+tirad_sw_xarxa2
+```
+
+```{r}
+#Hubs
+hs_sw_xarxa2 <- hub_score(sw_xarxa2, weights=NA)$vector
+hs_sw_xarxa2
+
+```
+
+```{r}
+#Authorities
+as_sw_xarxa2 <- authority_score(sw_xarxa2, weights=NA)$vector
+as_sw_xarxa2
+
+```
+
+
+
 ## Barabasi-Albert preferential attachment model for scale-free graphs
 
 ```{r}
@@ -337,6 +378,24 @@ plot( x=0:max(deg_xarxa3), y=1-deg.dist_xarxaT3, pch=19, cex=1.2, col="blue",
 
 ```
 
+```{r}
+tirad_census_ba_xarxa3 = barplot(triad_census(ba_xarxa3), log="y")
+tirad_census_ba_xarxa3
+```
+
+```{r}
+#Hubs
+hs_ba_xarxa3 <- hub_score(ba_xarxa3, weights=NA)$vector
+hs_ba_xarxa3
+
+```
+
+```{r}
+#Authorities
+as_ba_xarxa3 <- authority_score(ba_xarxa3, weights=NA)$vector
+as_ba_xarxa3
+
+```
 
 ```{r}
 df_plot1 <- data.frame(deg=rep(0:max(deg),4),
@@ -380,7 +439,22 @@ ggplot(df_plot2, aes(x=deg,y=freq,color=type)) +
 
 ```
 
-#--------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+#----------------------------FLY EM -------------------------------------------------------------------------
+
+
+
+
+
+
 
 
 
@@ -457,6 +531,27 @@ plot( x=0:max(deg_erFly), y=1-deg.dist_erFlyT, pch=19, cex=1.2, col="blue",
 ```
 
 ```{r}
+tirad_census_er_Fly = barplot(triad_census(er_Fly), log="y")
+tirad_census_er_Fly
+```
+
+```{r}
+#Hubs
+hs_er_Fly <- hub_score(er_Fly, weights=NA)$vector
+hs_er_Fly
+
+```
+
+```{r}
+#Authorities
+as_er_Fly <- authority_score(er_Fly, weights=NA)$vector
+as_er_Fly
+
+```
+
+
+
+```{r}
 sw_Fly <- sample_smallworld(dim=1, size=length(unique(archiuFly[,1])), nei=11, p=0.1)
 #plot(sw_Fly, vertex.size=6, vertex.label=NA, layout=layout_in_circle)
 
@@ -481,6 +576,25 @@ plot( x=0:max(deg_swFly), y=1-deg.dist_swFlyT, pch=19, cex=1.2, col="blue",
 ```
 
 ```{r}
+tirad_census_sw_Fly = barplot(triad_census(sw_Fly), log="y")
+tirad_census_sw_Fly
+```
+
+```{r}
+#Hubs
+hs_sw_Fly <- hub_score(sw_Fly, weights=NA)$vector
+hs_sw_Fly
+
+```
+
+```{r}
+#Authorities
+as_sw_Fly <- authority_score(sw_Fly, weights=NA)$vector
+as_sw_Fly
+
+```
+
+```{r}
 ba_fly <-  sample_pa(n=length(unique(archiuFly[,1])), power=1, m=11,  directed=T)
 #plot(ba_fly, vertex.size=6, vertex.label=NA, layout=layout_in_circle)
 
@@ -501,5 +615,223 @@ deg.dist_baFyT <- degree_distribution(ba_fly, cumulative=T, mode="all")
 plot( x=0:max(deg_baFly), y=1-deg.dist_baFyT, pch=19, cex=1.2, col="blue", 
 
       xlab="Degree", ylab="Cumulative Frequency")
+
+
 ```
+
+```{r}
+tirad_census_ba_fly = barplot(triad_census(ba_fly), log="y")
+tirad_census_ba_fly
+```
+
+```{r}
+#Hubs
+hs_ba_fly <- hub_score(ba_fly, weights=NA)$vector
+hs_ba_fly
+
+```
+
+```{r}
+#Authorities
+as_gFlyOpticS <- authority_score(ba_fly, weights=NA)$vector
+as_gFlyOpticS
+
+```
+
+
+##----------------------------------------FLY OPTIC--------------------------------------------------------------##
+
+
+
+```{r}
+archiuFlyOPtic <- read.table("FlyCircuit.csv",sep = ";",row.names=1,header=T)
+
+```
+
+```{r}
+gFlyOptic <- graph_from_adjacency_matrix(as.matrix(archiuFlyOPtic))
+gFlyOpticS <- simplify(gFlyOptic , remove.multiple = T, remove.loops = F, edge.attr.comb=c(weight="sum", type="ignore") )
+```
+
+```{r}
+l <- layout_with_fr(gFlyOpticS)
+plot(gFlyOpticS, rescale=F, layout=l*0.4)
+```
+
+
+```{r}
+#Degree distribution
+
+plot(gFlyOpticS, vertex.size=6, vertex.label=NA, layout=layout_in_circle)
+
+degFlyOptic <- degree(gFlyOpticS, mode="all")
+
+deg.degFlyOF <- degree_distribution(gFlyOpticS, cumulative=F, mode="all")
+
+plot( x=0:max(degFlyOptic), y=deg.degFlyOF, pch=19, cex=1.2, col="orange", 
+       log='y',
+
+      xlab="Degree", ylab="Log Frequency")
+
+deg.degFlyOT <- degree_distribution(gFlyOpticS, cumulative=T, mode="all")
+
+plot( x=0:max(degFlyOptic), y=1-deg.degFlyOT, pch=19, cex=1.2, col="orange", 
+
+      xlab="Degree", ylab="Cumulative Frequency")
+```
+
+```{r}
+tirad_census_FlyOptic = barplot(triad_census(gFlyOpticS), log="y")
+tirad_census_FlyOptic
+```
+
+```{r}
+#Hubs
+hs_FlyOptic <- hub_score(gFlyOpticS, weights=NA)$vector
+hs_FlyOptic
+
+```
+
+```{r}
+#Authorities
+as_FlyOptic <- authority_score(gFlyOpticS, weights=NA)$vector
+as_FlyOptic
+
+```
+
+
+
+
+```{r}
+set.seed(2706)
+
+er_FlyO <- sample_gnm(n=length(unique(archiuFlyOPtic[,1])), m=length(E(gFlyOpticS))) 
+plot(er_FlyO, vertex.size=6, vertex.label=NA, layout=layout_in_circle)  
+
+
+deg_erFlyO <- degree(er_FlyO, mode="all")
+
+
+
+deg.dist_erFlyOF <- degree_distribution(er_FlyO, cumulative=F, mode="all")
+
+plot( x=0:max(deg_erFlyO), y=deg.dist_erFlyOF, pch=19, cex=1.2, col="blue", 
+       log='y',
+
+      xlab="Degree", ylab="Log Frequency")
+
+
+deg.dist_erFlyOT <- degree_distribution(er_FlyO, cumulative=T, mode="all")
+
+plot( x=0:max(deg_erFlyO), y=1-deg.dist_erFlyOT, pch=19, cex=1.2, col="blue", 
+
+      xlab="Degree", ylab="Cumulative Frequency")
+```
+
+```{r}
+tirad_census_er_FlyO = barplot(triad_census(er_FlyO), log="y")
+tirad_census_er_FlyO
+```
+
+```{r}
+#Hubs
+hs_er_FlyO <- hub_score(er_FlyO, weights=NA)$vector
+hs_er_FlyO
+
+```
+
+```{r}
+#Authorities
+as_er_FlyO <- authority_score(er_FlyO, weights=NA)$vector
+as_er_FlyO
+
+```
+
+```{r}
+sw_FlyO <- sample_smallworld(dim=1, size=length(unique(archiuFlyOPtic[,1])), nei=11, p=0.1)
+#plot(sw_Fly, vertex.size=6, vertex.label=NA, layout=layout_in_circle)
+
+
+deg_swFlyO <- degree(sw_FlyO, mode="all")
+
+
+
+deg.dist_swFlyF <- degree_distribution(sw_FlyO, cumulative=F, mode="all")
+
+plot( x=0:max(deg_swFlyO), y=deg.dist_swFlyFO, pch=19, cex=1.2, col="blue", 
+       log='y',
+
+      xlab="Degree", ylab="Log Frequency")
+
+
+deg.dist_swFlyTO <- degree_distribution(sw_FlyO, cumulative=T, mode="all")
+
+plot( x=0:max(deg_swFlyO), y=1-deg.dist_swFlyTO, pch=19, cex=1.2, col="blue", 
+
+      xlab="Degree", ylab="Cumulative Frequency")
+```
+
+```{r}
+tirad_census_sw_FlyO = barplot(triad_census(sw_FlyO), log="y")
+tirad_census_sw_FlyO
+```
+
+```{r}
+#Hubs
+hs_sw_FlyO <- hub_score(sw_FlyO, weights=NA)$vector
+hs_sw_FlyO
+
+```
+
+```{r}
+#Authorities
+as_sw_FlyO <- authority_score(sw_FlyO, weights=NA)$vector
+as_sw_FlyO
+
+```
+
+```{r}
+ba_flyO <-  sample_pa(n=length(unique(archiuFlyOPtic[,1])), power=1, m=11,  directed=T)
+#plot(ba_fly, vertex.size=6, vertex.label=NA, layout=layout_in_circle)
+
+
+deg_baFlyO <- degree(ba_flyO, mode="all")
+
+
+deg.dist_baFlyFO <- degree_distribution(ba_flyO, cumulative=F, mode="all")
+
+plot( x=0:max(deg_baFlyO), y=deg.dist_baFlyFO, pch=19, cex=1.2, col="blue", 
+       log='y',
+
+      xlab="Degree", ylab="Log Frequency")
+
+
+deg.dist_baFyTO <- degree_distribution(ba_flyO, cumulative=T, mode="all")
+
+plot( x=0:max(deg_baFlyO), y=1-deg.dist_baFyTO, pch=19, cex=1.2, col="blue", 
+
+      xlab="Degree", ylab="Cumulative Frequency")
+
+
+```
+
+```{r}
+tirad_census_ba_flyO = barplot(triad_census(ba_flyO), log="y")
+tirad_census_ba_flyO
+```
+
+```{r}
+#Hubs
+hs_ba_flyO <- hub_score(ba_flyO, weights=NA)$vector
+hs_ba_flyO
+
+```
+
+```{r}
+#Authorities
+as_ba_flyO <- authority_score(ba_flyO, weights=NA)$vector
+as_ba_flyO
+
+```
+
 
