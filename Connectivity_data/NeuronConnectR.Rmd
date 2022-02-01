@@ -15,6 +15,11 @@ library("igraph")
 library("plyr")
 ```
 
+
+
+#Preparacio dades C.Elegans
+
+
 ```{r}
 # documentacio matriu https://www.wormatlas.org/neuronalwiring.html#NeuronalconnectivityII
 # documentacio igraph https://kateto.net/netscix2016.html
@@ -23,14 +28,6 @@ archiu <- read.csv("NeuronConnect.csv",sep = ";")
 
 unique(archiu$Type)
 
-head(archiu[,1:2])
-
-length(archiu[,1])
-
-print(archiu[456,3])
-```
-
-```{r}
 
 ab <- nrow(archiu)
 for (i in 1:ab) {
@@ -42,17 +39,13 @@ for (i in 1:ab) {
     archiu <- rbind.fill(archiu,archiu[i,])
   }
 }
-```
 
-```{r}
 g <- graph_from_edgelist(as.matrix(archiu[,c(1,2)]), directed = TRUE)
 
 E(g)$weight <- archiu$Nbr
 E(g)$name <- archiu$Type
 
-```
 
-```{r}
 gs <- simplify( g , remove.multiple = T, remove.loops = F, edge.attr.comb=c(weight="sum", type="ignore") )
 ```
 
@@ -81,16 +74,12 @@ E(gs)$width <- 1+E(gs)$weight/12
 plot(gs,rescale=F,layout=l*0.8)
 ```
 
-
 ```{r}
-
 barplot(triad_census(gs), log="y")
 ```
 
 ```{r}
 #Color nodes along the diameter:
-
-
 
 diam <- get_diameter(gs, directed=T)
 
@@ -106,45 +95,6 @@ ecol[E(gs, path=diam)] <- "orange"
 
 
 plot(gs, rescale=F,vertex.color=vcol, edge.color=ecol, edge.arrow.mode=0)
-```
-
-```{r}
-
-
-```
-
-```{r}
-#Hubs
-hs <- hub_score(gs, weights=NA)$vector
-
-
-
-
-par(mfrow=c(1,2))
-
- plot(gs,rescale=F, vertex.size=hs*50, main="Hubs")
-
-```
-
-```{r}
-#Authorities
-
-as <- authority_score(gs, weights=NA)$vector
-
-
-
-par(mfrow=c(1,2))
-
-```
-
-```{r}
-#Distances and paths
-#Longitud de ruta promedio: la media de la distancia más corta entre cada par de nodos en la red (en ambas direcciones para gráficos dirigidos).
-
-mean_distance(gs, directed=F)
-mean_distance(gs, directed=T)
-
-
 ```
 
 ```{r}
@@ -240,16 +190,42 @@ deg <- degree(gs, mode="all")
 
 deg.distF <- degree_distribution(gs, cumulative=F, mode="all")
 
-plot( x=0:max(deg), y=deg.distF, pch=19, cex=1.2, col="orange", 
-       log='y',
-
-      xlab="Degree", ylab="Log Frequency")
-
 deg.distT <- degree_distribution(gs, cumulative=T, mode="all")
 
-plot( x=0:max(deg), y=1-deg.distT, pch=19, cex=1.2, col="orange", 
 
-      xlab="Degree", ylab="Cumulative Frequency")
+
+#Triad census
+tirad_gs = triad_census(gs)
+
+#Hubs
+hs_gs <- hub_score(gs, weights=NA)$vector
+
+#Authorities
+as_gs <- authority_score(gs, weights=NA)$vector
+
+
+#Small-Worldness ratio: 
+SM_Ratio_gs = transitivity(gs)/mean_distance(gs)
+
+#modularity
+library(leiden)
+adj_mtx_gs  <- igraph::as_adjacency_matrix(gs)
+wtc_gs <- leiden(adj_mtx_gs)
+modularity_gs <- modularity(gs, wtc_gs)
+
+celegans_data <- list()
+celegans_data[["deg_distF_celegans"]] <- deg.distF
+celegans_data[["deg_distT_celegans"]] <- deg.distT
+celegans_data[["triad_census_celegans"]] <- tirad_gs
+celegans_data[["hub_score_celegans"]] <- hs_gs
+celegans_data[["modularity_celegans"]] <- modularity_gs
+celegans_data[["authority_score_celegans"]] <- as_gs 
+celegans_data[["SW_ratio_celegans"]] <- SM_Ratio_gs 
+
+save(celegans_data, file="celegans_data.RData")
+
+load("celegans_data.RData")
+
 ```
 
 
@@ -260,47 +236,55 @@ plot( x=0:max(deg), y=1-deg.distT, pch=19, cex=1.2, col="orange",
 ```{r}
 set.seed(2706)
 
-er_xarxa1 <- sample_gnm(n=283, m=3109) 
-plot(er_xarxa1, vertex.size=6, vertex.label=NA, layout=layout_in_circle)  
-
+er_xarxa1 <- sample_gnm(n=283, m=3109, directed = TRUE) 
 
 deg_xarxa1 <- degree(er_xarxa1, mode="all")
 
-
-
 deg.dist_xarxaF1 <- degree_distribution(er_xarxa1, cumulative=F, mode="all")
-
-plot( x=0:max(deg_xarxa1), y=deg.dist_xarxaF1, pch=19, cex=1.2, col="blue", 
-       log='y',
-
-      xlab="Degree", ylab="Log Frequency")
-
 
 deg.dist_xarxaT1 <- degree_distribution(er_xarxa1, cumulative=T, mode="all")
 
-plot( x=0:max(deg_xarxa1), y=1-deg.dist_xarxaT1, pch=19, cex=1.2, col="blue", 
 
-      xlab="Degree", ylab="Cumulative Frequency")
-```
+tirad_er_xarxa1 = triad_census(er_xarxa1)
 
-```{r}
-tirad_er_xarxa1 = barplot(triad_census(er_xarxa1), log="y")
-tirad_er_xarxa1
-```
 
-```{r}
 #Hubs
 hs_er_xarxa1 <- hub_score(er_xarxa1, weights=NA)$vector
-hs_er_xarxa1
 
-```
 
-```{r}
 #Authorities
 as_er_xarxa1 <- authority_score(er_xarxa1, weights=NA)$vector
-as_er_xarxa1
+
+
+#Small-Worldness ratio: 
+SM_Ratio_er_xarxa1 = transitivity(er_xarxa1)/mean_distance(er_xarxa1)
+
+
+#modularity
+library(leiden)
+adj_mtx_er_xarxa1  <- igraph::as_adjacency_matrix(er_xarxa1)
+wtc_er_xarxa1 <- leiden(adj_mtx_er_xarxa1)
+modularity_er_xarxa1 <- modularity(er_xarxa1, wtc_er_xarxa1)
+
+
+celegansER_data <- list()
+celegansER_data[["deg_distF_celegansER"]] <- deg.dist_xarxaF1
+celegansER_data[["deg_distT_celegansER"]] <- deg.dist_xarxaT1
+celegansER_data[["triad_census_celegansER"]] <- tirad_er_xarxa1
+celegansER_data[["hub_score_celegansER"]] <- hs_er_xarxa1
+celegansER_data[["modularity_celegansER"]] <- modularity_er_xarxa1
+celegansER_data[["authority_score_celegansER"]] <- as_er_xarxa1 
+celegansER_data[["SW_ratio_celegansER"]] <- SM_Ratio_er_xarxa1 
+
+save(celegansER_data, file="celegansER_data.RData")
+
+load("celegansER_data.RData")
+
 
 ```
+
+
+
 
 
 ## Watts-Strogatz small-world model
@@ -313,89 +297,91 @@ plot(sw_xarxa2, vertex.size=6, vertex.label=NA, layout=layout_in_circle)
 deg_xarxa2 <- degree(sw_xarxa2, mode="all")
 
 
-
 deg.dist_xarxaF2 <- degree_distribution(sw_xarxa2, cumulative=F, mode="all")
-
-plot( x=0:max(deg_xarxa2), y=deg.dist_xarxaF2, pch=19, cex=1.2, col="blue", 
-       log='y',
-
-      xlab="Degree", ylab="Log Frequency")
-
 
 deg.dist_xarxaT2 <- degree_distribution(sw_xarxa2, cumulative=T, mode="all")
 
-plot( x=0:max(deg_xarxa2), y=1-deg.dist_xarxaT2, pch=19, cex=1.2, col="blue", 
 
-      xlab="Degree", ylab="Cumulative Frequency")
+tirad_sw_xarxa2 = triad_census(sw_xarxa2)
 
-
-```
-
-```{r}
-tirad_sw_xarxa2 = barplot(triad_census(sw_xarxa2), log="y")
-tirad_sw_xarxa2
-```
-
-```{r}
 #Hubs
 hs_sw_xarxa2 <- hub_score(sw_xarxa2, weights=NA)$vector
-hs_sw_xarxa2
 
-```
-
-```{r}
 #Authorities
 as_sw_xarxa2 <- authority_score(sw_xarxa2, weights=NA)$vector
-as_sw_xarxa2
 
+#Small-Worldness ratio: 
+SM_Ratio_sw_xarxa2 = transitivity(sw_xarxa2)/mean_distance(sw_xarxa2)
+
+#modularity
+library(leiden)
+adj_mtx_sw_xarxa2  <- igraph::as_adjacency_matrix(sw_xarxa2)
+wtc_sw_xarxa2 <- leiden(adj_mtx_sw_xarxa2)
+modularity_sw_xarxa2 <- modularity(sw_xarxa2, wtc_sw_xarxa2)
+
+
+celegansSW_data <- list()
+celegansSW_data[["deg_distF_celegansSW"]] <- deg.dist_xarxaF2
+celegansSW_data[["deg_distT_celegansSW"]] <- deg.dist_xarxaT2
+celegansSW_data[["triad_census_celegansSW"]] <- tirad_sw_xarxa2
+celegansSW_data[["hub_score_celegansSW"]] <- hs_sw_xarxa2
+celegansSW_data[["modularity_celegansSW"]] <- modularity_sw_xarxa2
+celegansSW_data[["authority_score_celegansSW"]] <- as_sw_xarxa2 
+celegansSW_data[["SW_ratio_celegansSW"]] <- SM_Ratio_sw_xarxa2 
+
+save(celegansSW_data, file="celegansSW_data.RData")
+
+load("celegansSW_data.RData")
 ```
-
 
 
 ## Barabasi-Albert preferential attachment model for scale-free graphs
 
 ```{r}
 ba_xarxa3 <-  sample_pa(n=283, power=1, m=11,  directed=T)
-plot(ba_xarxa3, vertex.size=6, vertex.label=NA, layout=layout_in_circle)
-
 
 deg_xarxa3 <- degree(ba_xarxa3, mode="all")
 
-
 deg.dist_xarxaF3 <- degree_distribution(ba_xarxa3, cumulative=F, mode="all")
-
-plot( x=0:max(deg_xarxa3), y=deg.dist_xarxaF3, pch=19, cex=1.2, col="blue", 
-       log='y',
-
-      xlab="Degree", ylab="Log Frequency")
-
 
 deg.dist_xarxaT3 <- degree_distribution(ba_xarxa3, cumulative=T, mode="all")
 
-plot( x=0:max(deg_xarxa3), y=1-deg.dist_xarxaT3, pch=19, cex=1.2, col="blue", 
+tirad_census_ba_xarxa3 = triad_census(ba_xarxa3)
 
-      xlab="Degree", ylab="Cumulative Frequency")
-
-```
-
-```{r}
-tirad_census_ba_xarxa3 = barplot(triad_census(ba_xarxa3), log="y")
-tirad_census_ba_xarxa3
-```
-
-```{r}
 #Hubs
 hs_ba_xarxa3 <- hub_score(ba_xarxa3, weights=NA)$vector
-hs_ba_xarxa3
 
-```
-
-```{r}
 #Authorities
 as_ba_xarxa3 <- authority_score(ba_xarxa3, weights=NA)$vector
-as_ba_xarxa3
 
+#Small-Worldness ratio: 
+SM_Ratio_ba_xarxa3 = transitivity(ba_xarxa3)/mean_distance(ba_xarxa3)
+
+#modularity
+library(leiden)
+adj_mtx_ba_xarxa3  <- igraph::as_adjacency_matrix(ba_xarxa3)
+wtc_ba_xarxa3 <- leiden(adj_mtx_ba_xarxa3)
+modularity_ba_xarxa3 <- modularity(ba_xarxa3, wtc_ba_xarxa3)
+
+
+
+celegansBA_data <- list()
+celegansBA_data[["deg_distF_celegansBA"]] <- deg.dist_xarxaF3
+celegansBA_data[["deg_distT_celegansBA"]] <- deg.dist_xarxaT3
+celegansBA_data[["triad_census_celegansBA"]] <- tirad_census_ba_xarxa3
+celegansBA_data[["hub_score_celegansBA"]] <- hs_ba_xarxa3
+celegansBA_data[["modularity_celegansBA"]] <- modularity_ba_xarxa3
+celegansBA_data[["authority_score_celegansBA"]] <- as_ba_xarxa3 
+celegansBA_data[["SW_ratio_celegansBA"]] <- SM_Ratio_ba_xarxa3 
+
+save(celegansBA_data, file="celegansBA_data.RData")
+
+load("celegansBA_data.RData")
 ```
+
+
+
+
 
 ```{r}
 df_plot1 <- data.frame(deg=rep(0:max(deg),4),
@@ -492,17 +478,48 @@ degFly <- degree(gFlyS, mode="all")
 
 deg.degFlyF <- degree_distribution(gFlyS, cumulative=F, mode="all")
 
-plot( x=0:max(degFly), y=deg.degFlyF, pch=19, cex=1.2, col="orange", 
-       log='y',
-
-      xlab="Degree", ylab="Log Frequency")
-
 deg.degFlyT <- degree_distribution(gFlyS, cumulative=T, mode="all")
 
-plot( x=0:max(degFly), y=1-deg.degFlyT, pch=19, cex=1.2, col="orange", 
+tirad_census_gFlyS = triad_census(gFlyS)
 
-      xlab="Degree", ylab="Cumulative Frequency")
+
+#Hubs
+hs_gFlyS <- hub_score(gFlyS, weights=NA)$vector
+
+
+#Authorities
+as_gFlyS<- authority_score(gFlyS, weights=NA)$vector
+
+
+#Small-Worldness ratio: 
+SM_Ratio_gFlyS = transitivity(gFlyS)/mean_distance(gFlyS)
+
+#modularity
+library(leiden)
+adj_mtx_gFlyS  <- igraph::as_adjacency_matrix(gFlyS)
+wtc_gFlyS <- leiden(adj_mtx_gFlyS)
+modularity_gFlyS <- modularity(gFlyS, wtc_gFlyS)
+
+FlyEM_data <- list()
+FlyEM_data[["deg_distF_FlyEM"]] <- deg.degFlyF
+FlyEM_data[["deg_distT_FlyEM"]] <- deg.degFlyT
+FlyEM_data[["triad_census_FlyEM"]] <- tirad_census_gFlyS
+FlyEM_data[["hub_score_FlyEM"]] <- hs_gFlyS
+FlyEM_data[["modularity_FlyEM"]] <- modularity_gFlyS
+FlyEM_data[["authority_score_FlyEM"]] <- as_gFlyS 
+FlyEM_data[["SW_ratio_FlyEM"]] <- SM_Ratio_gFlyS 
+
+save(FlyEM_data, file="FlyEM_data.RData")
+
+load("FlyEM_data.RData")
+
+
+
+
 ```
+
+
+
 
 ```{r}
 set.seed(2706)
@@ -513,40 +530,42 @@ er_Fly <- sample_gnm(n=length(unique(archiuFly[,1])), m=length(E(gFlyS))) #n= NU
 
 deg_erFly <- degree(er_Fly, mode="all")
 
-
-
 deg.dist_erFlyF <- degree_distribution(er_Fly, cumulative=F, mode="all")
-
-plot( x=0:max(deg_erFly), y=deg.dist_erFlyF, pch=19, cex=1.2, col="blue", 
-       log='y',
-
-      xlab="Degree", ylab="Log Frequency")
-
 
 deg.dist_erFlyT <- degree_distribution(er_Fly, cumulative=T, mode="all")
 
-plot( x=0:max(deg_erFly), y=1-deg.dist_erFlyT, pch=19, cex=1.2, col="blue", 
+tirad_census_er_Fly = triad_census(er_Fly)
 
-      xlab="Degree", ylab="Cumulative Frequency")
-```
 
-```{r}
-tirad_census_er_Fly = barplot(triad_census(er_Fly), log="y")
-tirad_census_er_Fly
-```
-
-```{r}
 #Hubs
 hs_er_Fly <- hub_score(er_Fly, weights=NA)$vector
-hs_er_Fly
 
-```
 
-```{r}
 #Authorities
 as_er_Fly <- authority_score(er_Fly, weights=NA)$vector
-as_er_Fly
 
+
+#Small-Worldness ratio: 
+SM_Ratio_er_Fly = transitivity(er_Fly)/mean_distance(er_Fly)
+
+#modularity
+library(leiden)
+adj_mtx_er_Fly  <- igraph::as_adjacency_matrix(er_Fly)
+wtc_er_Fly <- leiden(adj_mtx_er_Fly)
+modularity_er_Fly <- modularity(er_Fly, wtc_er_Fly)
+
+FlyEM_ER_data <- list()
+FlyEM_ER_data[["deg_distF_FlyEM_ER"]] <- deg.dist_erFlyF
+FlyEM_ER_data[["deg_distT_FlyEM_ER"]] <- deg.dist_erFlyT
+FlyEM_ER_data[["triad_census_FlyEM_ER"]] <- tirad_census_er_Fly
+FlyEM_ER_data[["hub_score_FlyEM_ER"]] <- hs_er_Fly
+FlyEM_ER_data[["modularity_FlyEM_ER"]] <- modularity_er_Fly
+FlyEM_ER_data[["authority_score_FlyEM_ER"]] <- as_er_Fly 
+FlyEM_ER_data[["SW_ratio_FlyEM_ER"]] <- SM_Ratio_er_Fly 
+
+save(FlyEM_ER_data, file="FlyEM_ER_data.RData")
+
+load("FlyEM_ER_data.RData")
 ```
 
 
@@ -558,41 +577,41 @@ sw_Fly <- sample_smallworld(dim=1, size=length(unique(archiuFly[,1])), nei=11, p
 
 deg_swFly <- degree(sw_Fly, mode="all")
 
-
-
 deg.dist_swFlyF <- degree_distribution(sw_Fly, cumulative=F, mode="all")
-
-plot( x=0:max(deg_swFly), y=deg.dist_swFlyF, pch=19, cex=1.2, col="blue", 
-       log='y',
-
-      xlab="Degree", ylab="Log Frequency")
-
 
 deg.dist_swFlyT <- degree_distribution(sw_Fly, cumulative=T, mode="all")
 
-plot( x=0:max(deg_swFly), y=1-deg.dist_swFlyT, pch=19, cex=1.2, col="blue", 
+tirad_census_sw_Fly = triad_census(sw_Fly)
 
-      xlab="Degree", ylab="Cumulative Frequency")
-```
-
-```{r}
-tirad_census_sw_Fly = barplot(triad_census(sw_Fly), log="y")
-tirad_census_sw_Fly
-```
-
-```{r}
 #Hubs
 hs_sw_Fly <- hub_score(sw_Fly, weights=NA)$vector
-hs_sw_Fly
 
-```
-
-```{r}
 #Authorities
 as_sw_Fly <- authority_score(sw_Fly, weights=NA)$vector
-as_sw_Fly
 
+#Small-Worldness ratio: 
+SM_Ratio_sw_Fly = transitivity(sw_Fly)/mean_distance(sw_Fly)
+
+#modularity
+library(leiden)
+adj_mtx_sw_Fly  <- igraph::as_adjacency_matrix(sw_Fly)
+wtc_sw_Fly <- leiden(adj_mtx_sw_Fly)
+modularity_sw_Fly <- modularity(sw_Fly, wtc_sw_Fly)
+
+FlyEM_SW_data <- list()
+FlyEM_SW_data[["deg_distF_FlyEM_SW"]] <- deg.dist_swFlyF
+FlyEM_SW_data[["deg_distT_FlyEM_SW"]] <- deg.dist_swFlyT
+FlyEM_SW_data[["triad_census_FlyEM_SW"]] <- tirad_census_sw_Fly
+FlyEM_SW_data[["hub_score_FlyEM_SW"]] <- hs_sw_Fly
+FlyEM_SW_data[["modularity_FlyEM_SW"]] <- modularity_sw_Fly
+FlyEM_SW_data[["authority_score_FlyEM_SW"]] <- as_sw_Fly 
+FlyEM_SW_data[["SW_ratio_FlyEM_SW"]] <- SM_Ratio_sw_Fly 
+
+save(FlyEM_SW_data, file="FlyEM_SW_data.RData")
+
+load("FlyEM_SW_data.RData")
 ```
+
 
 ```{r}
 ba_fly <-  sample_pa(n=length(unique(archiuFly[,1])), power=1, m=11,  directed=T)
@@ -601,41 +620,42 @@ ba_fly <-  sample_pa(n=length(unique(archiuFly[,1])), power=1, m=11,  directed=T
 
 deg_baFly <- degree(ba_fly, mode="all")
 
-
 deg.dist_baFlyF <- degree_distribution(ba_fly, cumulative=F, mode="all")
-
-plot( x=0:max(deg_baFly), y=deg.dist_baFlyF, pch=19, cex=1.2, col="blue", 
-       log='y',
-
-      xlab="Degree", ylab="Log Frequency")
-
 
 deg.dist_baFyT <- degree_distribution(ba_fly, cumulative=T, mode="all")
 
-plot( x=0:max(deg_baFly), y=1-deg.dist_baFyT, pch=19, cex=1.2, col="blue", 
+tirad_census_ba_fly = triad_census(ba_fly)
 
-      xlab="Degree", ylab="Cumulative Frequency")
-
-
-```
-
-```{r}
-tirad_census_ba_fly = barplot(triad_census(ba_fly), log="y")
-tirad_census_ba_fly
-```
-
-```{r}
 #Hubs
 hs_ba_fly <- hub_score(ba_fly, weights=NA)$vector
 hs_ba_fly
 
-```
 
-```{r}
 #Authorities
 as_gFlyOpticS <- authority_score(ba_fly, weights=NA)$vector
 as_gFlyOpticS
 
+#Small-Worldness ratio: 
+SM_Ratio_sw_Fly = transitivity(sw_Fly)/mean_distance(sw_Fly)
+
+#modularity
+library(leiden)
+adj_mtx_sw_Fly  <- igraph::as_adjacency_matrix(sw_Fly)
+wtc_sw_Fly <- leiden(adj_mtx_sw_Fly)
+modularity_sw_Fly <- modularity(sw_Fly, wtc_sw_Fly)
+
+FlyEM_SW_data <- list()
+FlyEM_SW_data[["deg_distF_FlyEM_SW"]] <- deg.dist_swFlyF
+FlyEM_SW_data[["deg_distT_FlyEM_SW"]] <- deg.dist_swFlyT
+FlyEM_SW_data[["triad_census_FlyEM_SW"]] <- tirad_census_sw_Fly
+FlyEM_SW_data[["hub_score_FlyEM_SW"]] <- hs_sw_Fly
+FlyEM_SW_data[["modularity_FlyEM_SW"]] <- modularity_sw_Fly
+FlyEM_SW_data[["authority_score_FlyEM_SW"]] <- as_sw_Fly 
+FlyEM_SW_data[["SW_ratio_FlyEM_SW"]] <- SM_Ratio_sw_Fly 
+
+save(FlyEM_SW_data, file="FlyEM_SW_data.RData")
+
+load("FlyEM_SW_data.RData")
 ```
 
 
