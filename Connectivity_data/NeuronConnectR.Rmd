@@ -628,34 +628,33 @@ tirad_census_ba_fly = triad_census(ba_fly)
 
 #Hubs
 hs_ba_fly <- hub_score(ba_fly, weights=NA)$vector
-hs_ba_fly
 
 
 #Authorities
-as_gFlyOpticS <- authority_score(ba_fly, weights=NA)$vector
-as_gFlyOpticS
+as_baFly <- authority_score(ba_fly, weights=NA)$vector
+
 
 #Small-Worldness ratio: 
-SM_Ratio_sw_Fly = transitivity(sw_Fly)/mean_distance(sw_Fly)
+SM_Ratio_ba_fly= transitivity(ba_fly)/mean_distance(ba_fly)
 
 #modularity
 library(leiden)
-adj_mtx_sw_Fly  <- igraph::as_adjacency_matrix(sw_Fly)
-wtc_sw_Fly <- leiden(adj_mtx_sw_Fly)
-modularity_sw_Fly <- modularity(sw_Fly, wtc_sw_Fly)
+adj_mtx_ba_fly  <- igraph::as_adjacency_matrix(ba_fly)
+wtc_ba_fly <- leiden(adj_mtx_ba_fly)
+modularity_ba_fly <- modularity(ba_fly, wtc_ba_fly)
 
-FlyEM_SW_data <- list()
-FlyEM_SW_data[["deg_distF_FlyEM_SW"]] <- deg.dist_swFlyF
-FlyEM_SW_data[["deg_distT_FlyEM_SW"]] <- deg.dist_swFlyT
-FlyEM_SW_data[["triad_census_FlyEM_SW"]] <- tirad_census_sw_Fly
-FlyEM_SW_data[["hub_score_FlyEM_SW"]] <- hs_sw_Fly
-FlyEM_SW_data[["modularity_FlyEM_SW"]] <- modularity_sw_Fly
-FlyEM_SW_data[["authority_score_FlyEM_SW"]] <- as_sw_Fly 
-FlyEM_SW_data[["SW_ratio_FlyEM_SW"]] <- SM_Ratio_sw_Fly 
+FlyEM_BA_data <- list()
+FlyEM_BA_data[["deg_distF_FlyEM_BA"]] <- deg.dist_baFlyF
+FlyEM_BA_data[["deg_distT_FlyEM_BA"]] <- deg.dist_baFyT
+FlyEM_BA_data[["triad_census_FlyEM_BA"]] <- tirad_census_ba_fly
+FlyEM_BA_data[["hub_score_FlyEM_BA"]] <- hs_ba_fly
+FlyEM_BA_data[["modularity_FlyEM_BA"]] <- modularity_ba_fly
+FlyEM_BA_data[["authority_score_FlyEM_BA"]] <- as_baFly 
+FlyEM_BA_data[["SW_ratio_FlyEM_BA"]] <- SM_Ratio_ba_fly 
 
-save(FlyEM_SW_data, file="FlyEM_SW_data.RData")
+save(FlyEM_BA_data, file="FlyEM_BA_data.RData")
 
-load("FlyEM_SW_data.RData")
+load("FlyEM_BA_data.RData")
 ```
 
 
@@ -682,41 +681,46 @@ plot(gFlyOpticS, rescale=F, layout=l*0.4)
 ```{r}
 #Degree distribution
 
-plot(gFlyOpticS, vertex.size=6, vertex.label=NA, layout=layout_in_circle)
-
 degFlyOptic <- degree(gFlyOpticS, mode="all")
 
 deg.degFlyOF <- degree_distribution(gFlyOpticS, cumulative=F, mode="all")
 
-plot( x=0:max(degFlyOptic), y=deg.degFlyOF, pch=19, cex=1.2, col="orange", 
-       log='y',
-
-      xlab="Degree", ylab="Log Frequency")
 
 deg.degFlyOT <- degree_distribution(gFlyOpticS, cumulative=T, mode="all")
 
-plot( x=0:max(degFlyOptic), y=1-deg.degFlyOT, pch=19, cex=1.2, col="orange", 
 
-      xlab="Degree", ylab="Cumulative Frequency")
-```
-
-```{r}
 tirad_census_FlyOptic = barplot(triad_census(gFlyOpticS), log="y")
-tirad_census_FlyOptic
-```
 
-```{r}
+
 #Hubs
 hs_FlyOptic <- hub_score(gFlyOpticS, weights=NA)$vector
-hs_FlyOptic
 
-```
 
-```{r}
+
 #Authorities
 as_FlyOptic <- authority_score(gFlyOpticS, weights=NA)$vector
-as_FlyOptic
 
+#Small-Worldness ratio: 
+SM_Ratio_FlyOptic= transitivity(gFlyOpticS)/mean_distance(gFlyOpticS)
+
+#modularity
+library(leiden)
+adj_mtx_FlyOptic  <- igraph::as_adjacency_matrix(gFlyOpticS)
+wtc_FlyOptic <- leiden(adj_mtx_FlyOptic)
+modularity_FlyOptic <- modularity(gFlyOpticS, wtc_FlyOptic)
+
+FlyOP_data <- list()
+FlyOP_data[["deg_distF_FlyOP"]] <- deg.degFlyOF
+FlyOP_data[["deg_distT_FlyOP"]] <- deg.degFlyOT
+FlyOP_data[["triad_census_FlyOP"]] <- tirad_census_FlyOptic
+FlyOP_data[["hub_score_FlyOP"]] <- hs_FlyOptic
+FlyOP_data[["modularity_FlyOP"]] <- modularity_FlyOptic
+FlyOP_data[["authority_score_FlyOP"]] <- as_FlyOptic 
+FlyOP_data[["SW_ratio_FlyOP"]] <- SM_Ratio_FlyOptic 
+
+save(FlyOP_data, file="FlyOP_data.RData")
+
+load("FlyOP_data.RData")
 ```
 
 
@@ -725,8 +729,7 @@ as_FlyOptic
 ```{r}
 set.seed(2706)
 
-er_FlyO <- sample_gnm(n=length(unique(archiuFlyOPtic[,1])), m=length(E(gFlyOpticS))) 
-plot(er_FlyO, vertex.size=6, vertex.label=NA, layout=layout_in_circle)  
+er_FlyO <- sample_gnm(n=length(unique(archiuFlyOPtic[,1])), m=length(E(gFlyOpticS)),directed=T) 
 
 
 deg_erFlyO <- degree(er_FlyO, mode="all")
@@ -735,37 +738,45 @@ deg_erFlyO <- degree(er_FlyO, mode="all")
 
 deg.dist_erFlyOF <- degree_distribution(er_FlyO, cumulative=F, mode="all")
 
-plot( x=0:max(deg_erFlyO), y=deg.dist_erFlyOF, pch=19, cex=1.2, col="blue", 
-       log='y',
-
-      xlab="Degree", ylab="Log Frequency")
-
 
 deg.dist_erFlyOT <- degree_distribution(er_FlyO, cumulative=T, mode="all")
 
-plot( x=0:max(deg_erFlyO), y=1-deg.dist_erFlyOT, pch=19, cex=1.2, col="blue", 
 
-      xlab="Degree", ylab="Cumulative Frequency")
-```
-
-```{r}
 tirad_census_er_FlyO = barplot(triad_census(er_FlyO), log="y")
-tirad_census_er_FlyO
-```
 
-```{r}
 #Hubs
 hs_er_FlyO <- hub_score(er_FlyO, weights=NA)$vector
-hs_er_FlyO
 
-```
-
-```{r}
 #Authorities
 as_er_FlyO <- authority_score(er_FlyO, weights=NA)$vector
-as_er_FlyO
+
+#Small-Worldness ratio: 
+SM_Ratio_er_FlyO= transitivity(er_FlyO)/mean_distance(er_FlyO)
+
+#modularity
+library(leiden)
+adj_mtx_er_FlyO  <- igraph::as_adjacency_matrix(er_FlyO)
+wtc_er_FlyO <- leiden(adj_mtx_er_FlyO)
+modularity_er_FlyO <- modularity(er_FlyO, wtc_er_FlyO)
+
+FlyOP_ER_data <- list()
+FlyOP_ER_data[["deg_distF_FlyOP_ER"]] <- deg.dist_erFlyOF
+FlyOP_ER_data[["deg_distT_FlyOP_ER"]] <- deg.dist_erFlyOT
+FlyOP_ER_data[["triad_census_FlyOP_ER"]] <- tirad_census_er_FlyO
+FlyOP_ER_data[["hub_score_FlyOP_ER"]] <- hs_er_FlyO
+FlyOP_ER_data[["modularity_FlyOP_ER"]] <- modularity_er_FlyO
+FlyOP_ER_data[["authority_score_FlyOP_ER"]] <- as_er_FlyO 
+FlyOP_ER_data[["SW_ratio_FlyOP_ER"]] <- SM_Ratio_er_FlyO 
+
+save(FlyOP_ER_data, file="FlyOP_ER_data.RData")
+
+load("FlyOP_ER_data.RData")
 
 ```
+
+
+
+
 
 ```{r}
 sw_FlyO <- sample_smallworld(dim=1, size=length(unique(archiuFlyOPtic[,1])), nei=11, p=0.1)
@@ -775,38 +786,41 @@ sw_FlyO <- sample_smallworld(dim=1, size=length(unique(archiuFlyOPtic[,1])), nei
 deg_swFlyO <- degree(sw_FlyO, mode="all")
 
 
-
-deg.dist_swFlyF <- degree_distribution(sw_FlyO, cumulative=F, mode="all")
-
-plot( x=0:max(deg_swFlyO), y=deg.dist_swFlyFO, pch=19, cex=1.2, col="blue", 
-       log='y',
-
-      xlab="Degree", ylab="Log Frequency")
+deg.dist_swFlyFO <- degree_distribution(sw_FlyO, cumulative=F, mode="all")
 
 
 deg.dist_swFlyTO <- degree_distribution(sw_FlyO, cumulative=T, mode="all")
 
-plot( x=0:max(deg_swFlyO), y=1-deg.dist_swFlyTO, pch=19, cex=1.2, col="blue", 
 
-      xlab="Degree", ylab="Cumulative Frequency")
-```
-
-```{r}
 tirad_census_sw_FlyO = barplot(triad_census(sw_FlyO), log="y")
-tirad_census_sw_FlyO
-```
 
-```{r}
 #Hubs
 hs_sw_FlyO <- hub_score(sw_FlyO, weights=NA)$vector
-hs_sw_FlyO
 
-```
-
-```{r}
 #Authorities
 as_sw_FlyO <- authority_score(sw_FlyO, weights=NA)$vector
-as_sw_FlyO
+
+#Small-Worldness ratio: 
+SM_Ratio_sw_FlyO= transitivity(sw_FlyO)/mean_distance(sw_FlyO)
+
+#modularity
+library(leiden)
+adj_mtx_sw_FlyO  <- igraph::as_adjacency_matrix(sw_FlyO)
+wtc_sw_FlyO <- leiden(adj_mtx_sw_FlyO)
+modularity_sw_FlyO <- modularity(sw_FlyO, wtc_sw_FlyO)
+
+FlyOP_SW_data <- list()
+FlyOP_SW_data[["deg_distF_FlyOP_SW"]] <- deg.dist_swFlyFO
+FlyOP_SW_data[["deg_distT_FlyOP_SW"]] <- deg.dist_swFlyTO
+FlyOP_SW_data[["triad_census_FlyOP_SW"]] <- tirad_census_sw_FlyO
+FlyOP_SW_data[["hub_score_FlyOP_SW"]] <- hs_sw_FlyO
+FlyOP_SW_data[["modularity_FlyOP_SW"]] <- modularity_sw_FlyO
+FlyOP_SW_data[["authority_score_FlyOP_SW"]] <- as_sw_FlyO 
+FlyOP_SW_data[["SW_ratio_FlyOP_SW"]] <- SM_Ratio_sw_FlyO 
+
+save(FlyOP_SW_data, file="FlyOP_SW_data.RData")
+
+load("FlyOP_SW_data.RData")
 
 ```
 
@@ -820,37 +834,39 @@ deg_baFlyO <- degree(ba_flyO, mode="all")
 
 deg.dist_baFlyFO <- degree_distribution(ba_flyO, cumulative=F, mode="all")
 
-plot( x=0:max(deg_baFlyO), y=deg.dist_baFlyFO, pch=19, cex=1.2, col="blue", 
-       log='y',
-
-      xlab="Degree", ylab="Log Frequency")
-
 
 deg.dist_baFyTO <- degree_distribution(ba_flyO, cumulative=T, mode="all")
 
-plot( x=0:max(deg_baFlyO), y=1-deg.dist_baFyTO, pch=19, cex=1.2, col="blue", 
 
-      xlab="Degree", ylab="Cumulative Frequency")
-
-
-```
-
-```{r}
 tirad_census_ba_flyO = barplot(triad_census(ba_flyO), log="y")
-tirad_census_ba_flyO
-```
 
-```{r}
 #Hubs
 hs_ba_flyO <- hub_score(ba_flyO, weights=NA)$vector
-hs_ba_flyO
 
-```
-
-```{r}
 #Authorities
 as_ba_flyO <- authority_score(ba_flyO, weights=NA)$vector
-as_ba_flyO
+
+#Small-Worldness ratio: 
+SM_Ratio_ba_flyO= transitivity(ba_flyO)/mean_distance(ba_flyO)
+
+#modularity
+library(leiden)
+adj_mtx_ba_flyO  <- igraph::as_adjacency_matrix(ba_flyO)
+wtc_ba_flyO <- leiden(adj_mtx_ba_flyO)
+modularity_ba_flyO <- modularity(ba_flyO, wtc_ba_flyO)
+
+FlyOP_BA_data <- list()
+FlyOP_BA_data[["deg_distF_FlyOP_BA"]] <- deg.dist_baFlyFO
+FlyOP_BA_data[["deg_distT_FlyOP_BA"]] <- deg.dist_baFyTO
+FlyOP_BA_data[["triad_census_FlyOP_BA"]] <- tirad_census_ba_flyO
+FlyOP_BA_data[["hub_score_FlyOP_BA"]] <- hs_ba_flyO
+FlyOP_BA_data[["modularity_FlyOP_BA"]] <- modularity_ba_flyO
+FlyOP_BA_data[["authority_score_FlyOP_BA"]] <- as_ba_flyO 
+FlyOP_BA_data[["SW_ratio_FlyOP_BA"]] <- SM_Ratio_ba_flyO 
+
+save(FlyOP_BA_data, file="FlyOP_BA_data.RData")
+
+load("FlyOP_BA_data.RData")
 
 ```
 
