@@ -40,7 +40,7 @@ for (i in 1:ab) {
   }
 }
 
-g <- graph_from_edgelist(as.matrix(archiu[,c(1,2)]), directed = TRUE)
+g <- graph_from_edgelist(as.matrix(archiu[,c(1,2)]), directed = FALSE)
 
 E(g)$weight <- archiu$Nbr
 E(g)$name <- archiu$Type
@@ -213,6 +213,13 @@ adj_mtx_gs  <- igraph::as_adjacency_matrix(gs)
 wtc_gs <- leiden(adj_mtx_gs)
 modularity_gs <- modularity(gs, wtc_gs)
 
+#comunitats
+comunitats_gs <- cluster_louvain(gs)
+communitySize_gs <- comunitats_gs
+
+#cliques
+cliques_gs <- cliques(gs)
+
 celegans_data <- list()
 celegans_data[["deg_distF_celegans"]] <- deg.distF
 celegans_data[["deg_distT_celegans"]] <- deg.distT
@@ -220,7 +227,10 @@ celegans_data[["triad_census_celegans"]] <- tirad_gs
 celegans_data[["hub_score_celegans"]] <- hs_gs
 celegans_data[["modularity_celegans"]] <- modularity_gs
 celegans_data[["authority_score_celegans"]] <- as_gs 
+celegans_data[["communitySize_celegans"]] <- communitySize_gs
 celegans_data[["SW_ratio_celegans"]] <- SM_Ratio_gs 
+celegans_data[["cliques_celegans"]] <- cliques_gs 
+
 
 save(celegans_data, file="celegans_data.RData")
 
@@ -236,7 +246,7 @@ load("celegans_data.RData")
 ```{r}
 set.seed(2706)
 
-er_xarxa1 <- sample_gnm(n=283, m=3109, directed = TRUE) 
+er_xarxa1 <- sample_gnm(n=283, m=3109, directed = FALSE) 
 
 deg_xarxa1 <- degree(er_xarxa1, mode="all")
 
@@ -266,6 +276,12 @@ adj_mtx_er_xarxa1  <- igraph::as_adjacency_matrix(er_xarxa1)
 wtc_er_xarxa1 <- leiden(adj_mtx_er_xarxa1)
 modularity_er_xarxa1 <- modularity(er_xarxa1, wtc_er_xarxa1)
 
+#comunitats
+comunitats_er_xarxa1 <- cluster_louvain(er_xarxa1)
+communitySize_er_xarxa1 <- comunitats_er_xarxa1
+
+#cliques
+cliques_er_xarxa1 <- cliques(er_xarxa1)
 
 celegansER_data <- list()
 celegansER_data[["deg_distF_celegansER"]] <- deg.dist_xarxaF1
@@ -273,8 +289,11 @@ celegansER_data[["deg_distT_celegansER"]] <- deg.dist_xarxaT1
 celegansER_data[["triad_census_celegansER"]] <- tirad_er_xarxa1
 celegansER_data[["hub_score_celegansER"]] <- hs_er_xarxa1
 celegansER_data[["modularity_celegansER"]] <- modularity_er_xarxa1
-celegansER_data[["authority_score_celegansER"]] <- as_er_xarxa1 
+celegansER_data[["authority_score_celegansER"]] <- as_er_xarxa1
+celegansER_data[["communitySize_celegansER"]] <- communitySize_er_xarxa1
 celegansER_data[["SW_ratio_celegansER"]] <- SM_Ratio_er_xarxa1 
+celegansER_data[["cliques_celegansER"]] <- cliques_er_xarxa1 
+
 
 save(celegansER_data, file="celegansER_data.RData")
 
@@ -319,6 +338,12 @@ adj_mtx_sw_xarxa2  <- igraph::as_adjacency_matrix(sw_xarxa2)
 wtc_sw_xarxa2 <- leiden(adj_mtx_sw_xarxa2)
 modularity_sw_xarxa2 <- modularity(sw_xarxa2, wtc_sw_xarxa2)
 
+#comunitats
+comunitats_sw_xarxa2 <- cluster_louvain(sw_xarxa2)
+communitySize_sw_xarxa2 <- comunitats_sw_xarxa2
+
+#cliques
+cliques_sw_xarxa2 <- cliques(sw_xarxa2)
 
 celegansSW_data <- list()
 celegansSW_data[["deg_distF_celegansSW"]] <- deg.dist_xarxaF2
@@ -327,7 +352,9 @@ celegansSW_data[["triad_census_celegansSW"]] <- tirad_sw_xarxa2
 celegansSW_data[["hub_score_celegansSW"]] <- hs_sw_xarxa2
 celegansSW_data[["modularity_celegansSW"]] <- modularity_sw_xarxa2
 celegansSW_data[["authority_score_celegansSW"]] <- as_sw_xarxa2 
+celegansSW_data[["communitySize_celegansSW"]] <- communitySize_sw_xarxa2 
 celegansSW_data[["SW_ratio_celegansSW"]] <- SM_Ratio_sw_xarxa2 
+celegansSW_data[["cliques_celegansSW"]] <- cliques_sw_xarxa2 
 
 save(celegansSW_data, file="celegansSW_data.RData")
 
@@ -338,7 +365,7 @@ load("celegansSW_data.RData")
 ## Barabasi-Albert preferential attachment model for scale-free graphs
 
 ```{r}
-ba_xarxa3 <-  sample_pa(n=283, power=1, m=11,  directed=T)
+ba_xarxa3 <-  sample_pa(n=283, power=1, m=11,  directed=F)
 
 deg_xarxa3 <- degree(ba_xarxa3, mode="all")
 
@@ -363,7 +390,12 @@ adj_mtx_ba_xarxa3  <- igraph::as_adjacency_matrix(ba_xarxa3)
 wtc_ba_xarxa3 <- leiden(adj_mtx_ba_xarxa3)
 modularity_ba_xarxa3 <- modularity(ba_xarxa3, wtc_ba_xarxa3)
 
+#comunitats
+comunitats_ba_xarxa3 <- cluster_louvain(ba_xarxa3)
+communitySize_ba_xarxa3 <- comunitats_ba_xarxa3
 
+#cliques
+cliques_ba_xarxa3 <- cliques(ba_xarxa3)
 
 celegansBA_data <- list()
 celegansBA_data[["deg_distF_celegansBA"]] <- deg.dist_xarxaF3
@@ -371,8 +403,11 @@ celegansBA_data[["deg_distT_celegansBA"]] <- deg.dist_xarxaT3
 celegansBA_data[["triad_census_celegansBA"]] <- tirad_census_ba_xarxa3
 celegansBA_data[["hub_score_celegansBA"]] <- hs_ba_xarxa3
 celegansBA_data[["modularity_celegansBA"]] <- modularity_ba_xarxa3
-celegansBA_data[["authority_score_celegansBA"]] <- as_ba_xarxa3 
-celegansBA_data[["SW_ratio_celegansBA"]] <- SM_Ratio_ba_xarxa3 
+celegansBA_data[["authority_score_celegansBA"]] <- as_ba_xarxa3
+celegansBA_data[["communitySize_celegansBA"]] <- communitySize_ba_xarxa3 
+celegansBA_data[["SW_ratio_celegansBA"]] <- SM_Ratio_ba_xarxa3
+celegansBA_data[["cliques_celegansBA"]] <- cliques_ba_xarxa3 
+
 
 save(celegansBA_data, file="celegansBA_data.RData")
 
@@ -451,14 +486,14 @@ archiuFly <- read.csv("v1.2_exported-traced-adjacencies-v1.2.csv",sep = ",",head
 ```
 
 ```{r}
-# archiuFly[,1] <- as.numeric(as.factor(archiuFly[,1]))
-# archiuFly[,2] <- as.numeric(as.factor(archiuFly[,2]))
-# archiuFly[,3] <- as.numeric(as.factor(archiuFly[,3]))
-# gFly <- graph_from_edgelist(as.matrix(archiuFly[,c(1,2)]), directed = TRUE)
+#archiuFly[,1] <- as.numeric(as.factor(archiuFly[,1]))
+#archiuFly[,2] <- as.numeric(as.factor(archiuFly[,2]))
+#archiuFly[,3] <- as.numeric(as.factor(archiuFly[,3]))
+#gFly <- graph_from_edgelist(as.matrix(archiuFly[,c(1,2)]), directed = F)
 # 
-# gFlyS <- simplify( gFly , remove.multiple = T, remove.loops = F, edge.attr.comb=c(weight="sum", type="ignore") )
+#gFlyS <- simplify( gFly , remove.multiple = T, remove.loops = F, edge.attr.comb=c(weight="sum", type="ignore") )
 # 
-# save(gFlyS, file="gFlyS.RData")
+#save(gFlyS, file="gFlyS.RData")
 
 load("gFlyS.RData")
 
@@ -500,6 +535,13 @@ adj_mtx_gFlyS  <- igraph::as_adjacency_matrix(gFlyS)
 wtc_gFlyS <- leiden(adj_mtx_gFlyS)
 modularity_gFlyS <- modularity(gFlyS, wtc_gFlyS)
 
+#comunitats
+comunitats_gFlyS <- cluster_louvain(gFlyS)
+communitySize_gFlyS <- comunitats_gFlyS
+
+#cliques
+cliques_gFlyS <- cliques(gFlyS)
+
 FlyEM_data <- list()
 FlyEM_data[["deg_distF_FlyEM"]] <- deg.degFlyF
 FlyEM_data[["deg_distT_FlyEM"]] <- deg.degFlyT
@@ -507,7 +549,10 @@ FlyEM_data[["triad_census_FlyEM"]] <- tirad_census_gFlyS
 FlyEM_data[["hub_score_FlyEM"]] <- hs_gFlyS
 FlyEM_data[["modularity_FlyEM"]] <- modularity_gFlyS
 FlyEM_data[["authority_score_FlyEM"]] <- as_gFlyS 
+FlyEM_data[["communitySize_FlyEM"]] <- communitySize_gFlyS 
 FlyEM_data[["SW_ratio_FlyEM"]] <- SM_Ratio_gFlyS 
+FlyEM_data[["cliques_FlyEM"]] <- cliques_gFlyS 
+
 
 save(FlyEM_data, file="FlyEM_data.RData")
 
@@ -554,6 +599,13 @@ adj_mtx_er_Fly  <- igraph::as_adjacency_matrix(er_Fly)
 wtc_er_Fly <- leiden(adj_mtx_er_Fly)
 modularity_er_Fly <- modularity(er_Fly, wtc_er_Fly)
 
+#comunitats
+comunitats_er_Fly <- cluster_louvain(er_Fly)
+communitySize_er_Fly <- comunitats_er_Fly
+
+#cliques
+cliques_er_Fly <- cliques(er_Fly)
+
 FlyEM_ER_data <- list()
 FlyEM_ER_data[["deg_distF_FlyEM_ER"]] <- deg.dist_erFlyF
 FlyEM_ER_data[["deg_distT_FlyEM_ER"]] <- deg.dist_erFlyT
@@ -561,7 +613,10 @@ FlyEM_ER_data[["triad_census_FlyEM_ER"]] <- tirad_census_er_Fly
 FlyEM_ER_data[["hub_score_FlyEM_ER"]] <- hs_er_Fly
 FlyEM_ER_data[["modularity_FlyEM_ER"]] <- modularity_er_Fly
 FlyEM_ER_data[["authority_score_FlyEM_ER"]] <- as_er_Fly 
-FlyEM_ER_data[["SW_ratio_FlyEM_ER"]] <- SM_Ratio_er_Fly 
+FlyEM_ER_data[["communitySize_FlyEM_ER"]] <- communitySize_er_Fly 
+FlyEM_ER_data[["SW_ratio_FlyEM_ER"]] <- SM_Ratio_er_Fly
+FlyEM_ER_data[["cliques_FlyEM_ER"]] <- cliques_er_Fly 
+
 
 save(FlyEM_ER_data, file="FlyEM_ER_data.RData")
 
@@ -598,6 +653,13 @@ adj_mtx_sw_Fly  <- igraph::as_adjacency_matrix(sw_Fly)
 wtc_sw_Fly <- leiden(adj_mtx_sw_Fly)
 modularity_sw_Fly <- modularity(sw_Fly, wtc_sw_Fly)
 
+#comunitats
+comunitats_sw_Fly <- cluster_louvain(sw_Fly)
+communitySize_sw_Fly <- comunitats_sw_Fly
+
+#cliques
+cliques_sw_Fly <- cliques(sw_Fly)
+
 FlyEM_SW_data <- list()
 FlyEM_SW_data[["deg_distF_FlyEM_SW"]] <- deg.dist_swFlyF
 FlyEM_SW_data[["deg_distT_FlyEM_SW"]] <- deg.dist_swFlyT
@@ -605,7 +667,10 @@ FlyEM_SW_data[["triad_census_FlyEM_SW"]] <- tirad_census_sw_Fly
 FlyEM_SW_data[["hub_score_FlyEM_SW"]] <- hs_sw_Fly
 FlyEM_SW_data[["modularity_FlyEM_SW"]] <- modularity_sw_Fly
 FlyEM_SW_data[["authority_score_FlyEM_SW"]] <- as_sw_Fly 
+FlyEM_SW_data[["communitySize_FlyEM_SW"]] <- communitySize_sw_Fly 
 FlyEM_SW_data[["SW_ratio_FlyEM_SW"]] <- SM_Ratio_sw_Fly 
+FlyEM_SW_data[["cliques_FlyEM_SW"]] <- cliques_sw_Fly 
+
 
 save(FlyEM_SW_data, file="FlyEM_SW_data.RData")
 
@@ -614,7 +679,7 @@ load("FlyEM_SW_data.RData")
 
 
 ```{r}
-ba_fly <-  sample_pa(n=length(unique(archiuFly[,1])), power=1, m=11,  directed=T)
+ba_fly <-  sample_pa(n=length(unique(archiuFly[,1])), power=1, m=11,  directed=F)
 #plot(ba_fly, vertex.size=6, vertex.label=NA, layout=layout_in_circle)
 
 
@@ -643,6 +708,13 @@ adj_mtx_ba_fly  <- igraph::as_adjacency_matrix(ba_fly)
 wtc_ba_fly <- leiden(adj_mtx_ba_fly)
 modularity_ba_fly <- modularity(ba_fly, wtc_ba_fly)
 
+#comunitats
+comunitats_ba_fly <- cluster_louvain(ba_fly)
+communitySize_ba_fly <- comunitats_ba_fly
+
+#cliques
+cliques_ba_fly <- cliques(ba_fly)
+
 FlyEM_BA_data <- list()
 FlyEM_BA_data[["deg_distF_FlyEM_BA"]] <- deg.dist_baFlyF
 FlyEM_BA_data[["deg_distT_FlyEM_BA"]] <- deg.dist_baFyT
@@ -650,7 +722,10 @@ FlyEM_BA_data[["triad_census_FlyEM_BA"]] <- tirad_census_ba_fly
 FlyEM_BA_data[["hub_score_FlyEM_BA"]] <- hs_ba_fly
 FlyEM_BA_data[["modularity_FlyEM_BA"]] <- modularity_ba_fly
 FlyEM_BA_data[["authority_score_FlyEM_BA"]] <- as_baFly 
+FlyEM_BA_data[["communitySize_FlyEM_BA"]] <- communitySize_ba_fly 
 FlyEM_BA_data[["SW_ratio_FlyEM_BA"]] <- SM_Ratio_ba_fly 
+FlyEM_BA_data[["cliques_FlyEM_BA"]] <- communitySize_ba_fly 
+
 
 save(FlyEM_BA_data, file="FlyEM_BA_data.RData")
 
@@ -668,7 +743,7 @@ archiuFlyOPtic <- read.table("FlyCircuit.csv",sep = ";",row.names=1,header=T)
 ```
 
 ```{r}
-gFlyOptic <- graph_from_adjacency_matrix(as.matrix(archiuFlyOPtic))
+gFlyOptic <- graph_from_adjacency_matrix(as.matrix(archiuFlyOPtic),mode = "undirected")
 gFlyOpticS <- simplify(gFlyOptic , remove.multiple = T, remove.loops = F, edge.attr.comb=c(weight="sum", type="ignore") )
 ```
 
@@ -709,6 +784,13 @@ adj_mtx_FlyOptic  <- igraph::as_adjacency_matrix(gFlyOpticS)
 wtc_FlyOptic <- leiden(adj_mtx_FlyOptic)
 modularity_FlyOptic <- modularity(gFlyOpticS, wtc_FlyOptic)
 
+#comunitats
+comunitats_gFlyOpticS <- cluster_louvain(gFlyOpticS)
+communitySize_gFlyOpticS <- comunitats_gFlyOpticS
+
+#cliques
+cliques_gFlyOpticS <- cliques(gFlyOpticS)
+
 FlyOP_data <- list()
 FlyOP_data[["deg_distF_FlyOP"]] <- deg.degFlyOF
 FlyOP_data[["deg_distT_FlyOP"]] <- deg.degFlyOT
@@ -716,7 +798,8 @@ FlyOP_data[["triad_census_FlyOP"]] <- tirad_census_FlyOptic
 FlyOP_data[["hub_score_FlyOP"]] <- hs_FlyOptic
 FlyOP_data[["modularity_FlyOP"]] <- modularity_FlyOptic
 FlyOP_data[["authority_score_FlyOP"]] <- as_FlyOptic 
-FlyOP_data[["SW_ratio_FlyOP"]] <- SM_Ratio_FlyOptic 
+FlyOP_data[["communitySize_FlyOP"]] <- communitySize_gFlyOpticS 
+FlyOP_data[["cliques_FlyOP"]] <- cliques_gFlyOpticS 
 
 save(FlyOP_data, file="FlyOP_data.RData")
 
@@ -729,7 +812,7 @@ load("FlyOP_data.RData")
 ```{r}
 set.seed(2706)
 
-er_FlyO <- sample_gnm(n=length(unique(archiuFlyOPtic[,1])), m=length(E(gFlyOpticS)),directed=T) 
+er_FlyO <- sample_gnm(n=length(unique(archiuFlyOPtic[,1])), m=length(E(gFlyOpticS)),directed=F) 
 
 
 deg_erFlyO <- degree(er_FlyO, mode="all")
@@ -759,6 +842,13 @@ adj_mtx_er_FlyO  <- igraph::as_adjacency_matrix(er_FlyO)
 wtc_er_FlyO <- leiden(adj_mtx_er_FlyO)
 modularity_er_FlyO <- modularity(er_FlyO, wtc_er_FlyO)
 
+#comunitats
+comunitats_er_FlyO <- cluster_louvain(er_FlyO)
+communitySize_er_FlyO <- comunitats_er_FlyO
+
+#cliques
+cliques_er_FlyO <- cliques(er_FlyO)
+
 FlyOP_ER_data <- list()
 FlyOP_ER_data[["deg_distF_FlyOP_ER"]] <- deg.dist_erFlyOF
 FlyOP_ER_data[["deg_distT_FlyOP_ER"]] <- deg.dist_erFlyOT
@@ -766,7 +856,10 @@ FlyOP_ER_data[["triad_census_FlyOP_ER"]] <- tirad_census_er_FlyO
 FlyOP_ER_data[["hub_score_FlyOP_ER"]] <- hs_er_FlyO
 FlyOP_ER_data[["modularity_FlyOP_ER"]] <- modularity_er_FlyO
 FlyOP_ER_data[["authority_score_FlyOP_ER"]] <- as_er_FlyO 
+FlyOP_ER_data[["communitySize_FlyOP_ER"]] <- communitySize_er_FlyO 
 FlyOP_ER_data[["SW_ratio_FlyOP_ER"]] <- SM_Ratio_er_FlyO 
+FlyOP_ER_data[["cliques_FlyOP_ER"]] <- cliques_er_FlyO 
+
 
 save(FlyOP_ER_data, file="FlyOP_ER_data.RData")
 
@@ -809,14 +902,24 @@ adj_mtx_sw_FlyO  <- igraph::as_adjacency_matrix(sw_FlyO)
 wtc_sw_FlyO <- leiden(adj_mtx_sw_FlyO)
 modularity_sw_FlyO <- modularity(sw_FlyO, wtc_sw_FlyO)
 
+#comunitats
+comunitats_sw_FlyO <- cluster_louvain(sw_FlyO)
+communitySize_sw_FlyO <- comunitats_sw_FlyO
+
+#cliques
+cliques_sw_FlyO <- cliques(sw_FlyO)
+
 FlyOP_SW_data <- list()
 FlyOP_SW_data[["deg_distF_FlyOP_SW"]] <- deg.dist_swFlyFO
 FlyOP_SW_data[["deg_distT_FlyOP_SW"]] <- deg.dist_swFlyTO
 FlyOP_SW_data[["triad_census_FlyOP_SW"]] <- tirad_census_sw_FlyO
 FlyOP_SW_data[["hub_score_FlyOP_SW"]] <- hs_sw_FlyO
 FlyOP_SW_data[["modularity_FlyOP_SW"]] <- modularity_sw_FlyO
-FlyOP_SW_data[["authority_score_FlyOP_SW"]] <- as_sw_FlyO 
+FlyOP_SW_data[["authority_score_FlyOP_SW"]] <- as_sw_FlyO
+FlyOP_SW_data[["communitySize_FlyOP_SW"]] <- communitySize_sw_FlyO 
 FlyOP_SW_data[["SW_ratio_FlyOP_SW"]] <- SM_Ratio_sw_FlyO 
+FlyOP_SW_data[["cliques_FlyOP_SW"]] <- cliques_sw_FlyO 
+
 
 save(FlyOP_SW_data, file="FlyOP_SW_data.RData")
 
@@ -825,7 +928,7 @@ load("FlyOP_SW_data.RData")
 ```
 
 ```{r}
-ba_flyO <-  sample_pa(n=length(unique(archiuFlyOPtic[,1])), power=1, m=11,  directed=T)
+ba_flyO <-  sample_pa(n=length(unique(archiuFlyOPtic[,1])), power=1, m=11,  directed=F)
 #plot(ba_fly, vertex.size=6, vertex.label=NA, layout=layout_in_circle)
 
 
@@ -855,6 +958,13 @@ adj_mtx_ba_flyO  <- igraph::as_adjacency_matrix(ba_flyO)
 wtc_ba_flyO <- leiden(adj_mtx_ba_flyO)
 modularity_ba_flyO <- modularity(ba_flyO, wtc_ba_flyO)
 
+#comunitats
+comunitats_ba_flyO <- cluster_louvain(ba_flyO)
+communitySize_ba_flyO <- comunitats_ba_flyO
+
+#cliques
+cliques_ba_flyO <- cliques(ba_flyO)
+
 FlyOP_BA_data <- list()
 FlyOP_BA_data[["deg_distF_FlyOP_BA"]] <- deg.dist_baFlyFO
 FlyOP_BA_data[["deg_distT_FlyOP_BA"]] <- deg.dist_baFyTO
@@ -862,7 +972,10 @@ FlyOP_BA_data[["triad_census_FlyOP_BA"]] <- tirad_census_ba_flyO
 FlyOP_BA_data[["hub_score_FlyOP_BA"]] <- hs_ba_flyO
 FlyOP_BA_data[["modularity_FlyOP_BA"]] <- modularity_ba_flyO
 FlyOP_BA_data[["authority_score_FlyOP_BA"]] <- as_ba_flyO 
-FlyOP_BA_data[["SW_ratio_FlyOP_BA"]] <- SM_Ratio_ba_flyO 
+FlyOP_BA_data[["communitySize_FlyOP_BA"]] <- communitySize_ba_flyO
+FlyOP_BA_data[["SW_ratio_FlyOP_BA"]] <- SM_Ratio_ba_flyO
+FlyOP_BA_data[["cliques_FlyOP_BA"]] <- cliques_ba_flyO 
+
 
 save(FlyOP_BA_data, file="FlyOP_BA_data.RData")
 
@@ -871,3 +984,87 @@ load("FlyOP_BA_data.RData")
 ```
 
 
+
+
+#----------------------------------------RATOLI-----------------------------------------#
+
+
+```{r}
+archiuRata <- read.csv("affinity_map_nonflip_thres30_20211103.csv",sep = ",")
+
+```
+
+```{r}
+archiuDades <- read.csv("mouse_mesoscale_connectivity_matrix.csv",sep = ",",header=FALSE)
+archiuNoms <- read.csv("mouse_mesoscale_regionname.csv")
+
+noms <- as.character(archiuNoms$region_name)
+  
+names(archiuDades) <- noms
+rownames(archiuDades) <- noms
+```
+
+```{r}
+
+gRatoli <-graph_from_adjacency_matrix(
+  as.matrix(archiuDades),
+  mode = "directed",
+  weighted = TRUE,
+  diag = TRUE,
+  add.colnames = NULL,
+  add.rownames = NA,
+)
+gsRatoli <- simplify( gRatoli , remove.multiple = T, remove.loops = F, edge.attr.comb=c(weight="sum", type="ignore") )
+
+lRatoli <- layout_with_fr(gsRatoli)
+
+plot(gsRatoli, rescale=F, layout=lRatoli*0.4)
+```
+
+
+```{r}
+degRatoli <- degree(gsRatoli, mode="all")
+
+deg.distRatoliF <- degree_distribution(gsRatoli, cumulative=F, mode="all")
+
+deg.distRatoliT <- degree_distribution(gsRatoli, cumulative=T, mode="all")
+
+
+
+#Triad census
+tirad_gsRatoli = triad_census(gsRatoli)
+
+#Hubs
+hs_gsRatoli <- hub_score(gsRatoli, weights=NA)$vector
+
+#Authorities
+as_gsRatoli <- authority_score(gsRatoli, weights=NA)$vector
+
+
+#Small-Worldness ratio: 
+SM_Ratio_gsRatoli = transitivity(gsRatoli)/mean_distance(gsRatoli)
+
+#modularity
+library(leiden)
+adj_mtx_gsRatoli  <- igraph::as_adjacency_matrix(gsRatoli)
+wtc_gsRatoli <- leiden(adj_mtx_gsRatoli)
+modularity_gsRatoli <- modularity(gsRatoli, wtc_gsRatoli)
+
+#comunitats
+comunitats_ba_flyO <- cluster_louvain(ba_flyO)
+communitySize_ba_flyO <- comunitats_ba_flyO
+
+ratoli_data <- list()
+ratoli_data[["deg_distF_ratoli"]] <- deg.distRatoliF
+ratoli_data[["deg_distT_ratoli"]] <- deg.distRatoliT
+ratoli_data[["triad_census_ratoli"]] <- tirad_gsRatoli
+ratoli_data[["hub_score_ratoli"]] <- hs_gsRatoli
+ratoli_data[["modularity_ratoli"]] <- modularity_gsRatoli
+ratoli_data[["authority_score_ratoli"]] <- as_gsRatoli 
+ratoli_data[["SW_ratio_ratoli"]] <- SM_Ratio_gsRatoli 
+
+save(ratoli_data, file="ratoli_data.RData")
+
+load("ratoli_data.RData")
+
+```
