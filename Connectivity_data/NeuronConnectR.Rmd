@@ -220,6 +220,9 @@ communitySize_gs <- comunitats_gs
 #cliques
 cliques_gs <- cliques(gs)
 
+#n nodes
+nNodes_gs <- gsize(gs)
+
 celegans_data <- list()
 celegans_data[["deg_distF_celegans"]] <- deg.distF
 celegans_data[["deg_distT_celegans"]] <- deg.distT
@@ -230,6 +233,7 @@ celegans_data[["authority_score_celegans"]] <- as_gs
 celegans_data[["communitySize_celegans"]] <- communitySize_gs
 celegans_data[["SW_ratio_celegans"]] <- SM_Ratio_gs 
 celegans_data[["cliques_celegans"]] <- cliques_gs 
+celegans_data[["nNodes_celegans"]] <- nNodes_gs 
 
 
 save(celegans_data, file="celegans_data.RData")
@@ -283,6 +287,9 @@ communitySize_er_xarxa1 <- comunitats_er_xarxa1
 #cliques
 cliques_er_xarxa1 <- cliques(er_xarxa1)
 
+#n nodes
+nNodes_er_xarxa1 <- gsize(er_xarxa1)
+
 celegansER_data <- list()
 celegansER_data[["deg_distF_celegansER"]] <- deg.dist_xarxaF1
 celegansER_data[["deg_distT_celegansER"]] <- deg.dist_xarxaT1
@@ -293,6 +300,8 @@ celegansER_data[["authority_score_celegansER"]] <- as_er_xarxa1
 celegansER_data[["communitySize_celegansER"]] <- communitySize_er_xarxa1
 celegansER_data[["SW_ratio_celegansER"]] <- SM_Ratio_er_xarxa1 
 celegansER_data[["cliques_celegansER"]] <- cliques_er_xarxa1 
+celegansER_data[["nNodes_celegansER"]] <- nNodes_er_xarxa1 
+
 
 
 save(celegansER_data, file="celegansER_data.RData")
@@ -345,6 +354,9 @@ communitySize_sw_xarxa2 <- comunitats_sw_xarxa2
 #cliques
 cliques_sw_xarxa2 <- cliques(sw_xarxa2)
 
+#n nodes
+nNodes_sw_xarxa2 <- gsize(sw_xarxa2)
+
 celegansSW_data <- list()
 celegansSW_data[["deg_distF_celegansSW"]] <- deg.dist_xarxaF2
 celegansSW_data[["deg_distT_celegansSW"]] <- deg.dist_xarxaT2
@@ -355,6 +367,8 @@ celegansSW_data[["authority_score_celegansSW"]] <- as_sw_xarxa2
 celegansSW_data[["communitySize_celegansSW"]] <- communitySize_sw_xarxa2 
 celegansSW_data[["SW_ratio_celegansSW"]] <- SM_Ratio_sw_xarxa2 
 celegansSW_data[["cliques_celegansSW"]] <- cliques_sw_xarxa2 
+celegansSW_data[["nNodes_celegansSW"]] <- nNodes_sw_xarxa2 
+
 
 save(celegansSW_data, file="celegansSW_data.RData")
 
@@ -397,6 +411,9 @@ communitySize_ba_xarxa3 <- comunitats_ba_xarxa3
 #cliques
 cliques_ba_xarxa3 <- cliques(ba_xarxa3)
 
+#n nodes
+nNodes_ba_xarxa3 <- gsize(ba_xarxa3)
+
 celegansBA_data <- list()
 celegansBA_data[["deg_distF_celegansBA"]] <- deg.dist_xarxaF3
 celegansBA_data[["deg_distT_celegansBA"]] <- deg.dist_xarxaT3
@@ -407,6 +424,8 @@ celegansBA_data[["authority_score_celegansBA"]] <- as_ba_xarxa3
 celegansBA_data[["communitySize_celegansBA"]] <- communitySize_ba_xarxa3 
 celegansBA_data[["SW_ratio_celegansBA"]] <- SM_Ratio_ba_xarxa3
 celegansBA_data[["cliques_celegansBA"]] <- cliques_ba_xarxa3 
+celegansBA_data[["nNodes_celegansBA"]] <- nNodes_ba_xarxa3 
+
 
 
 save(celegansBA_data, file="celegansBA_data.RData")
