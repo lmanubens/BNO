@@ -40,7 +40,7 @@ for (i in 1:ab) {
   }
 }
 
-g <- graph_from_edgelist(as.matrix(archiu[,c(1,2)]), directed = FALSE)
+g <- graph_from_edgelist(as.matrix(archiu[,c(1,2)]), directed = TRUE)
 
 E(g)$weight <- archiu$Nbr
 E(g)$name <- archiu$Type
@@ -223,6 +223,24 @@ cliques_gs <- cliques(gs)
 #n nodes
 nNodes_gs <- gsize(gs)
 
+#routing efficiency
+am_gs  <- get.adjacency(gs)
+distances_gs <- distances(gs , mode = "in", weights=1/E(gs)$weight)
+
+library(gmp)
+rout_effs_gs <- as.numeric(as.bigz(1/distances_gs)/as.bigz(dim(am_gs)[[1]]*(dim(am_gs)[[1]]-1)))
+rout_effs_matrix_gs <- as.matrix(rout_effs_gs)
+rout_effs_matrix_gs <- rout_effs_matrix_gs[is.finite(rout_effs_matrix_gs)]
+rout_eff_gs <- as.numeric(sum(rout_effs_matrix_gs))
+
+#storage capacity
+storage_caps_gs <- numeric()
+library(Matrix)
+for(j in 1:dim(am_gs)[[1]]){
+  storage_caps_gs <- append(storage_caps_gs, as.integer(2*log2(chooseZ(as.bigz(sum(am_gs[,j]) + nnzero(am_gs[,j]) -1), as.bigz(sum(am_gs[,j]))))))
+}
+storage_cap_gs <- mean(storage_caps_gs)#,na.rm=T)
+
 celegans_data <- list()
 celegans_data[["deg_distF_celegans"]] <- deg.distF
 celegans_data[["deg_distT_celegans"]] <- deg.distT
@@ -234,6 +252,10 @@ celegans_data[["communitySize_celegans"]] <- communitySize_gs
 celegans_data[["SW_ratio_celegans"]] <- SM_Ratio_gs 
 celegans_data[["cliques_celegans"]] <- cliques_gs 
 celegans_data[["nNodes_celegans"]] <- nNodes_gs 
+celegans_data[["rout_eff_celegans"]] <- rout_eff_gs 
+celegans_data[["storage_cap_celegans"]] <- storage_cap_gs
+
+
 
 
 save(celegans_data, file="celegans_data.RData")
@@ -250,7 +272,7 @@ load("celegans_data.RData")
 ```{r}
 set.seed(2706)
 
-er_xarxa1 <- sample_gnm(n=283, m=3109, directed = FALSE) 
+er_xarxa1 <- sample_gnm(n=283, m=3109, directed = TRUE) 
 
 deg_xarxa1 <- degree(er_xarxa1, mode="all")
 
@@ -290,6 +312,24 @@ cliques_er_xarxa1 <- cliques(er_xarxa1)
 #n nodes
 nNodes_er_xarxa1 <- gsize(er_xarxa1)
 
+#routing efficiency
+am_xarxa1  <- get.adjacency(er_xarxa1)
+distances_xarxa1 <- distances(er_xarxa1 , mode = "in", weights=1/E(am_xarxa1)$weight)
+
+library(gmp)
+rout_effs_xarxa1 <- as.numeric(as.bigz(1/distances_xarxa1)/as.bigz(dim(am_xarxa1)[[1]]*(dim(am_xarxa1)[[1]]-1)))
+rout_effs_matrix_xarxa1 <- as.matrix(rout_effs_xarxa1)
+rout_effs_matrix_xarxa1 <- rout_effs_matrix_xarxa1[is.finite(rout_effs_matrix_xarxa1)]
+rout_eff_xarxa1 <- as.numeric(sum(rout_effs_matrix_xarxa1))
+
+#storage capacity
+storage_caps_xarxa1 <- numeric()
+library(Matrix)
+for(j in 1:dim(am_xarxa1)[[1]]){
+  storage_caps_xarxa1 <- append(storage_caps_xarxa1, as.integer(2*log2(chooseZ(as.bigz(sum(am_xarxa1[,j]) + nnzero(am_xarxa1[,j]) -1), as.bigz(sum(am_xarxa1[,j]))))))
+}
+storage_cap_xarxa1 <- mean(storage_caps_xarxa1)#,na.rm=T)
+
 celegansER_data <- list()
 celegansER_data[["deg_distF_celegansER"]] <- deg.dist_xarxaF1
 celegansER_data[["deg_distT_celegansER"]] <- deg.dist_xarxaT1
@@ -301,7 +341,8 @@ celegansER_data[["communitySize_celegansER"]] <- communitySize_er_xarxa1
 celegansER_data[["SW_ratio_celegansER"]] <- SM_Ratio_er_xarxa1 
 celegansER_data[["cliques_celegansER"]] <- cliques_er_xarxa1 
 celegansER_data[["nNodes_celegansER"]] <- nNodes_er_xarxa1 
-
+celegansER_data[["rout_eff_celegansER"]] <- rout_eff_xarxa1
+celegansER_data[["storage_celegansER"]] <- storage_cap_xarxa1
 
 
 save(celegansER_data, file="celegansER_data.RData")
@@ -357,6 +398,24 @@ cliques_sw_xarxa2 <- cliques(sw_xarxa2)
 #n nodes
 nNodes_sw_xarxa2 <- gsize(sw_xarxa2)
 
+#routing efficiency
+am_sw_xarxa2 <- get.adjacency(sw_xarxa2)
+distances_sw_xarxa2 <- distances(sw_xarxa2 , mode = "in", weights=1/E(am_sw_xarxa2)$weight)
+
+library(gmp)
+rout_effs_sw_xarxa2 <- as.numeric(as.bigz(1/distances_sw_xarxa2)/as.bigz(dim(am_sw_xarxa2)[[1]]*(dim(am_sw_xarxa2)[[1]]-1)))
+rout_effs_matrix_sw_xarxa2 <- as.matrix(rout_effs_sw_xarxa2)
+rout_effs_matrix_sw_xarxa2 <- rout_effs_matrix_sw_xarxa2[is.finite(rout_effs_matrix_sw_xarxa2)]
+rout_eff_sw_xarxa2 <- as.numeric(sum(rout_effs_matrix_sw_xarxa2))
+
+#storage capacity
+storage_caps_sw_xarxa2 <- numeric()
+library(Matrix)
+for(j in 1:dim(am_sw_xarxa2)[[1]]){
+  storage_caps_sw_xarxa2 <- append(storage_caps_sw_xarxa2, as.integer(2*log2(chooseZ(as.bigz(sum(am_sw_xarxa2[,j]) + nnzero(am_sw_xarxa2[,j]) -1), as.bigz(sum(am_sw_xarxa2[,j]))))))
+}
+storage_cap_sw_xarxa2 <- mean(storage_caps_sw_xarxa2)#,na.rm=T)
+
 celegansSW_data <- list()
 celegansSW_data[["deg_distF_celegansSW"]] <- deg.dist_xarxaF2
 celegansSW_data[["deg_distT_celegansSW"]] <- deg.dist_xarxaT2
@@ -368,6 +427,8 @@ celegansSW_data[["communitySize_celegansSW"]] <- communitySize_sw_xarxa2
 celegansSW_data[["SW_ratio_celegansSW"]] <- SM_Ratio_sw_xarxa2 
 celegansSW_data[["cliques_celegansSW"]] <- cliques_sw_xarxa2 
 celegansSW_data[["nNodes_celegansSW"]] <- nNodes_sw_xarxa2 
+celegansSW_data[["rout_eff_celegansSW"]] <- rout_eff_sw_xarxa2 
+celegansSW_data[["storage_cap_celegansSW"]] <- storage_cap_sw_xarxa2
 
 
 save(celegansSW_data, file="celegansSW_data.RData")
@@ -414,6 +475,24 @@ cliques_ba_xarxa3 <- cliques(ba_xarxa3)
 #n nodes
 nNodes_ba_xarxa3 <- gsize(ba_xarxa3)
 
+#routing efficiency
+am_ba_xarxa3 <- get.adjacency(ba_xarxa3)
+distances_ba_xarxa3 <- distances(ba_xarxa3 , mode = "in", weights=1/E(am_ba_xarxa3)$weight)
+
+library(gmp)
+rout_effs_ba_xarxa3 <- as.numeric(as.bigz(1/distances_ba_xarxa3)/as.bigz(dim(am_ba_xarxa3)[[1]]*(dim(am_ba_xarxa3)[[1]]-1)))
+rout_effs_matrix_ba_xarxa3 <- as.matrix(rout_effs_ba_xarxa3)
+rout_effs_matrix_ba_xarxa3 <- rout_effs_matrix_ba_xarxa3[is.finite(rout_effs_matrix_ba_xarxa3)]
+rout_eff_ba_xarxa3 <- as.numeric(sum(rout_effs_matrix_ba_xarxa3))
+
+#storage capacity
+storage_caps_ba_xarxa3 <- numeric()
+library(Matrix)
+for(j in 1:dim(am_ba_xarxa3)[[1]]){
+  storage_caps_ba_xarxa3 <- append(storage_caps_ba_xarxa3, as.integer(2*log2(chooseZ(as.bigz(sum(am_ba_xarxa3[,j]) + nnzero(am_ba_xarxa3[,j]) -1), as.bigz(sum(am_ba_xarxa3[,j]))))))
+}
+storage_cap_sw_xarxa2 <- mean(storage_caps_sw_xarxa2)#,na.rm=T)
+
 celegansBA_data <- list()
 celegansBA_data[["deg_distF_celegansBA"]] <- deg.dist_xarxaF3
 celegansBA_data[["deg_distT_celegansBA"]] <- deg.dist_xarxaT3
@@ -425,7 +504,8 @@ celegansBA_data[["communitySize_celegansBA"]] <- communitySize_ba_xarxa3
 celegansBA_data[["SW_ratio_celegansBA"]] <- SM_Ratio_ba_xarxa3
 celegansBA_data[["cliques_celegansBA"]] <- cliques_ba_xarxa3 
 celegansBA_data[["nNodes_celegansBA"]] <- nNodes_ba_xarxa3 
-
+celegansBA_data[["rout_eff_celegansBA"]] <- rout_eff_ba_xarxa3 
+celegansBA_data[["storage_cap_celegansBA"]] <- storage_cap_sw_xarxa2 
 
 
 save(celegansBA_data, file="celegansBA_data.RData")
@@ -489,14 +569,6 @@ ggplot(df_plot2, aes(x=deg,y=freq,color=type)) +
 
 
 #----------------------------FLY EM -------------------------------------------------------------------------
-
-
-
-
-
-
-
-
 
 
 ```{r}
@@ -762,7 +834,7 @@ archiuFlyOPtic <- read.table("FlyCircuit.csv",sep = ";",row.names=1,header=T)
 ```
 
 ```{r}
-gFlyOptic <- graph_from_adjacency_matrix(as.matrix(archiuFlyOPtic),mode = "undirected")
+gFlyOptic <- graph_from_adjacency_matrix(as.matrix(archiuFlyOPtic))
 gFlyOpticS <- simplify(gFlyOptic , remove.multiple = T, remove.loops = F, edge.attr.comb=c(weight="sum", type="ignore") )
 ```
 
@@ -892,7 +964,6 @@ load("FlyOP_ER_data.RData")
 
 ```{r}
 sw_FlyO <- sample_smallworld(dim=1, size=length(unique(archiuFlyOPtic[,1])), nei=11, p=0.1)
-#plot(sw_Fly, vertex.size=6, vertex.label=NA, layout=layout_in_circle)
 
 
 deg_swFlyO <- degree(sw_FlyO, mode="all")
@@ -1031,7 +1102,7 @@ gRatoli <-graph_from_adjacency_matrix(
   weighted = TRUE,
   diag = TRUE,
   add.colnames = NULL,
-  add.rownames = NA,
+  add.rownames = NA
 )
 gsRatoli <- simplify( gRatoli , remove.multiple = T, remove.loops = F, edge.attr.comb=c(weight="sum", type="ignore") )
 
@@ -1087,3 +1158,27 @@ save(ratoli_data, file="ratoli_data.RData")
 load("ratoli_data.RData")
 
 ```
+
+
+
+
+```{r}
+#routing efficiency
+am  <- get.adjacency(graph)
+distances_g <- distances(graph , mode = "in", weights=1/E(graph)$weight)
+
+library(gmp)
+rout_effs <- as.numeric(as.bigz(1/distances_g)/as.bigz(dim(am)[[1]]*(dim(am)[[1]]-1)))
+rout_effs_matrix <- as.matrix(rout_effs)
+rout_effs_matrix <- rout_effs_matrix[is.finite(rout_effs_matrix)]
+rout_eff <- as.numeric(sum(rout_effs_matrix))
+
+#storage capacity
+storage_caps <- numeric()
+library(Matrix)
+for(j in 1:dim(am)[[1]]){
+  storage_caps <- append(storage_caps, as.integer(2*log2(chooseZ(as.bigz(sum(am[,j]) + nnzero(am[,j]) -1), as.bigz(sum(am[,j]))))))
+}
+storage_cap <- mean(storage_caps)#,na.rm=T)
+```
+
