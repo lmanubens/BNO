@@ -9,7 +9,7 @@ library(Matrix)
 archiuFlyOPtic <- read.table("FlyCircuit.csv",sep = ";",row.names=1,header=T)
 
 
-gFlyOptic <- graph_from_adjacency_matrix(as.matrix(archiuFlyOPtic),mode = "directed")
+gFlyOptic <- graph_from_adjacency_matrix(as.matrix(archiuFlyOPtic),mode = "directed",weighted = TRUE)
 gFlyOpticS <- simplify(gFlyOptic , remove.multiple = T, remove.loops = F, edge.attr.comb=c(weight="sum", type="ignore") )
 
 
@@ -42,8 +42,10 @@ camunitats_FlyOptic <- leiden(adj_mtx_FlyOptic)
 modularity_FlyOptic <- modularity(gFlyOpticS, camunitats_FlyOptic)
 
 
-#cliques VA LENT
-#cliques_gFlyOpticS <- cliques(gFlyOpticS)
+#cliques
+cliques_gFlyOpticS <- cliques(gFlyOpticS)
+
+
 
 #n nodes
 nEdges_gFlyOpticS <- gsize(gFlyOpticS)
@@ -94,8 +96,9 @@ load("FlyOP_data.RData")
 
 set.seed(2706)
 
-er_FlyO <- sample_gnm(n=length(unique(archiuFlyOPtic[,1])), m=length(E(gFlyOpticS)),directed=T)
-
+er_FlyO <- sample_gnm(n=length(unique(row.names(archiuFlyOPtic))), m=length(E(gFlyOpticS)),directed=T)
+V(er_FlyO)$name <- V(gFlyOpticS)$name
+E(er_FlyO)$weight <- E(gFlyOpticS)$weight
 
 deg_erFlyO <- degree(er_FlyO, mode="all")
 
@@ -107,7 +110,7 @@ deg.dist_erFlyOF <- degree_distribution(er_FlyO, cumulative=F, mode="all")
 deg.dist_erFlyOT <- degree_distribution(er_FlyO, cumulative=T, mode="all")
 
 
-tirad_census_er_FlyO = barplot(triad_census(er_FlyO), log="y")
+tirad_census_er_FlyO = triad_census(er_FlyO)
 
 #Hubs
 hs_er_FlyO <- hub_score(er_FlyO, weights=NA)$vector
@@ -179,7 +182,7 @@ load("FlyOP_ER_data.RData")
 
 
 
-sw_FlyO <- sample_smallworld(dim=1, size=length(unique(archiuFlyOPtic[,1])), nei=11, p=0.1)
+sw_FlyO <- sample_smallworld(dim=1, size=length(unique(row.names(archiuFlyOPtic))), nei=11, p=0.1)
 #plot(sw_Fly, vertex.size=6, vertex.label=NA, layout=layout_in_circle)
 
 
@@ -192,7 +195,7 @@ deg.dist_swFlyFO <- degree_distribution(sw_FlyO, cumulative=F, mode="all")
 deg.dist_swFlyTO <- degree_distribution(sw_FlyO, cumulative=T, mode="all")
 
 
-tirad_census_sw_FlyO = barplot(triad_census(sw_FlyO), log="y")
+tirad_census_sw_FlyO = triad_census(sw_FlyO)
 
 #Hubs
 hs_sw_FlyO <- hub_score(sw_FlyO, weights=NA)$vector
@@ -264,7 +267,7 @@ load("FlyOP_SW_data.RData")
 
 
 
-ba_flyO <-  sample_pa(n=length(unique(archiuFlyOPtic[,1])), power=1, m=11,  directed=F)
+ba_flyO <-  sample_pa(n=length(unique(row.names(archiuFlyOPtic))), power=1, m=11,  directed=F)
 #plot(ba_fly, vertex.size=6, vertex.label=NA, layout=layout_in_circle)
 
 
@@ -277,7 +280,7 @@ deg.dist_baFlyFO <- degree_distribution(ba_flyO, cumulative=F, mode="all")
 deg.dist_baFyTO <- degree_distribution(ba_flyO, cumulative=T, mode="all")
 
 
-tirad_census_ba_flyO = barplot(triad_census(ba_flyO), log="y")
+tirad_census_ba_flyO = triad_census(ba_flyO)
 
 #Hubs
 hs_ba_flyO <- hub_score(ba_flyO, weights=NA)$vector
