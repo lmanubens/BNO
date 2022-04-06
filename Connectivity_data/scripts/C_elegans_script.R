@@ -175,36 +175,36 @@ as_gs <- authority_score(gs, weights=NA)$vector
 SM_Ratio_gs = transitivity(gs)/mean_distance(gs)
 
 #modularity y comunitat
-adj_mtx_gs  <- igraph::as_adjacency_matrix(gs)
+adj_mtx_gs  <- igraph::as_adjacency_matrix(gs, attr="weight")
 comunitats_gs <- leiden(adj_mtx_gs)
 modularity_gs <- modularity(gs, comunitats_gs)
 
 
 #cliques
-cliques_gs <- cliques(gs)
+#cliques_gs <- cliques(gs)
 
 #n nodes
 nEdges_gs <- gsize(gs)
-cost_gs <- sum(E(gs)$weight)
+#cost_gs <- sum(E(gs)$weight)
 nNodes_gs <- gorder(gs)
 
 
 #routing efficiency
-am_gs  <- get.adjacency(gs)
-distances_gs <- distances(gs , mode = "in", weights=1/E(gs)$weight)
+#am_gs  <- get.adjacency(gs, attr="weight")
+#distances_gs <- distances(gs , mode = "in", weights=1/E(gs)$weight)
 
 
-rout_effs_gs <- as.numeric(as.bigz(1/distances_gs)/as.bigz(dim(am_gs)[[1]]*(dim(am_gs)[[1]]-1)))
-rout_effs_matrix_gs <- as.matrix(rout_effs_gs)
-rout_effs_matrix_gs <- rout_effs_matrix_gs[is.finite(rout_effs_matrix_gs)]
-rout_eff_gs <- as.numeric(sum(rout_effs_matrix_gs))
+#rout_effs_gs <- as.numeric(as.bigz(1/distances_gs)/as.bigz(dim(am_gs)[[1]]*(dim(am_gs)[[1]]-1)))
+#rout_effs_matrix_gs <- as.matrix(rout_effs_gs)
+#rout_effs_matrix_gs <- rout_effs_matrix_gs[is.finite(rout_effs_matrix_gs)]
+#rout_eff_gs <- as.numeric(sum(rout_effs_matrix_gs))
 
 #storage capacity
-storage_caps_gs <- numeric()
-for(j in 1:dim(am_gs)[[1]]){
-  storage_caps_gs <- append(storage_caps_gs, as.integer(2*log2(chooseZ(as.bigz(sum(am_gs[,j]) + nnzero(am_gs[,j]) -1), as.bigz(sum(am_gs[,j]))))))
-}
-storage_cap_gs <- mean(storage_caps_gs)#,na.rm=T)
+#storage_caps_gs <- numeric()
+#for(j in 1:dim(am_gs)[[1]]){
+  #  storage_caps_gs <- append(storage_caps_gs, as.integer(2*log2(chooseZ(as.bigz(sum(am_gs[,j]) + nnzero(am_gs[,j]) -1), as.bigz(sum(am_gs[,j]))))))
+  #}
+#storage_cap_gs <- mean(storage_caps_gs)#,na.rm=T)
 
 celegans_data <- list()
 celegans_data[["deg_distF_celegans"]] <- deg.distF
@@ -215,12 +215,12 @@ celegans_data[["modularity_celegans"]] <- modularity_gs
 celegans_data[["authority_score_celegans"]] <- as_gs 
 celegans_data[["communities_celegans"]] <- comunitats_gs
 celegans_data[["SW_ratio_celegans"]] <- SM_Ratio_gs 
-celegans_data[["cliques_celegans"]] <- cliques_gs 
-celegans_data[["cost_celegans"]] <- cost_gs
+#celegans_data[["cliques_celegans"]] <- cliques_gs 
+celegans_data[["cost_celegans"]] <- 17752.000000
 celegans_data[["nEdges_celegans"]] <- nEdges_gs
 celegans_data[["nNodes_celegans"]] <- nNodes_gs 
-celegans_data[["rout_eff_celegans"]] <- rout_eff_gs 
-celegans_data[["storage_cap_celegans"]] <- storage_cap_gs
+celegans_data[["rout_eff_celegans"]] <- 2.328322 
+celegans_data[["storage_cap_celegans"]] <- 76.444714
 
 
 
@@ -263,36 +263,36 @@ SM_Ratio_er_xarxa1 = transitivity(er_xarxa1)/mean_distance(er_xarxa1)
 
 
 #modularity y comunitats
-adj_mtx_er_xarxa1  <- igraph::as_adjacency_matrix(er_xarxa1)
+adj_mtx_er_xarxa1  <- igraph::as_adjacency_matrix(er_xarxa1, attr="weight")
 comunitats_er_xarxa1 <- leiden(adj_mtx_er_xarxa1)
 modularity_er_xarxa1 <- modularity(er_xarxa1, comunitats_er_xarxa1)
 
 
 #cliques
-cliques_er_xarxa1 <- cliques(er_xarxa1)
+#cliques_er_xarxa1 <- cliques(er_xarxa1)
 
 #n nodes
 nEdges_er_xarxa1 <- gsize(er_xarxa1)
-cost_er_xarxa1 <- sum(E(er_xarxa1)$weight)
+#cost_er_xarxa1 <- sum(E(er_xarxa1)$weight)
 nNodes_er_xarxa1 <- gorder(er_xarxa1)
 
 #routing efficiency
-am_xarxa1  <- igraph::get.adjacency(er_xarxa1)
-distances_xarxa1 <- distances(er_xarxa1 , mode = "in", weights=1/E(er_xarxa1)$weight)
+#am_xarxa1  <- igraph::get.adjacency(er_xarxa1, attr="weight")
+#distances_xarxa1 <- distances(er_xarxa1 , mode = "in", weights=1/E(er_xarxa1)$weight)
 
-rout_effs_xarxa1 <- as.numeric(as.bigz(1/distances_xarxa1)/as.bigz(dim(am_xarxa1)[[1]]*(dim(am_xarxa1)[[1]]-1)))
-rout_effs_matrix_xarxa1 <- as.matrix(rout_effs_xarxa1)
-rout_effs_matrix_xarxa1 <- rout_effs_matrix_xarxa1[is.finite(rout_effs_matrix_xarxa1)]
-rout_eff_xarxa1 <- as.numeric(sum(rout_effs_matrix_xarxa1))
+#rout_effs_xarxa1 <- as.numeric(as.bigz(1/distances_xarxa1)/as.bigz(dim(am_xarxa1)[[1]]*(dim(am_xarxa1)[[1]]-1)))
+#rout_effs_matrix_xarxa1 <- as.matrix(rout_effs_xarxa1)
+#rout_effs_matrix_xarxa1 <- rout_effs_matrix_xarxa1[is.finite(rout_effs_matrix_xarxa1)]
+#rout_eff_xarxa1 <- as.numeric(sum(rout_effs_matrix_xarxa1))
 
 
 
 #storage capacity
-storage_caps_xarxa1 <- numeric()
-for(j in 1:dim(am_xarxa1)[[1]]){
-  storage_caps_xarxa1 <- append(storage_caps_xarxa1, as.integer(2*log2(chooseZ(as.bigz(sum(am_xarxa1[,j]) + nnzero(am_xarxa1[,j]) -1), as.bigz(sum(am_xarxa1[,j]))))))
-}
-storage_cap_xarxa1 <- mean(storage_caps_xarxa1)#,na.rm=T)
+#storage_caps_xarxa1 <- numeric()
+#for(j in 1:dim(am_xarxa1)[[1]]){
+  #storage_caps_xarxa1 <- append(storage_caps_xarxa1, as.integer(2*log2(chooseZ(as.bigz(sum(am_xarxa1[,j]) + nnzero(am_xarxa1[,j]) -1), as.bigz(sum(am_xarxa1[,j]))))))
+  #}
+#storage_cap_xarxa1 <- mean(storage_caps_xarxa1)#,na.rm=T)
 
 celegansER_data <- list()
 celegansER_data[["deg_distF_celegansER"]] <- deg.dist_xarxaF1
@@ -303,12 +303,12 @@ celegansER_data[["modularity_celegansER"]] <- modularity_er_xarxa1
 celegansER_data[["authority_score_celegansER"]] <- as_er_xarxa1
 celegansER_data[["communities_celegansER"]] <- comunitats_er_xarxa1
 celegansER_data[["SW_ratio_celegansER"]] <- SM_Ratio_er_xarxa1 
-celegansER_data[["cliques_celegansER"]] <- cliques_er_xarxa1 
-celegansER_data[["cost_celegansER"]] <- cost_er_xarxa1 
+#celegansER_data[["cliques_celegansER"]] <- cliques_er_xarxa1 
+celegansER_data[["cost_celegansER"]] <- 17724.000000
 celegansER_data[["nEdges_celegansER"]] <- nEdges_er_xarxa1
 celegansER_data[["nNodes_celegansER"]] <- nNodes_er_xarxa1 
-celegansER_data[["rout_eff_celegansER"]] <- rout_eff_xarxa1
-celegansER_data[["storage_celegansER"]] <- storage_cap_xarxa1
+celegansER_data[["rout_eff_celegansER"]] <- 2.676468
+celegansER_data[["storage_celegansER"]] <- 76.662397
 
 
 save(celegansER_data, file="celegansER_data.RData")
@@ -324,10 +324,8 @@ load("celegansER_data.RData")
 
 
 sw_xarxa2 <- rewire(graph.lattice(283, nei=11, dir=TRUE, mutual=TRUE), 
-                    with = each_edge(p = .1, loops = FALSE))
-# sw_xarxa2 <- sample_smallworld(dim=1, size=283, nei=11, p=0.1)
-# V(sw_xarxa2)$name <- V(gs)$name
-# obtenim pesos aleatoris per les connexions de mes que tenim en sw_xarxa2 en comparacio amb gs
+                    with = each_edge(p = .02, loops = FALSE))
+
 pesos_extra <- sample(E(gs)$weight,length(E(sw_xarxa2))-length(E(gs)))
 E(sw_xarxa2)$weight <- c(E(gs)$weight,pesos_extra)
 
@@ -352,33 +350,33 @@ as_sw_xarxa2 <- authority_score(sw_xarxa2, weights=NA)$vector
 SM_Ratio_sw_xarxa2 = transitivity(sw_xarxa2)/mean_distance(sw_xarxa2)
 
 #modularity y comunitats
-adj_mtx_sw_xarxa2  <- igraph::as_adjacency_matrix(sw_xarxa2)
+adj_mtx_sw_xarxa2  <- igraph::as_adjacency_matrix(sw_xarxa2, attr="weight")
 comunitats_sw_xarxa2 <- leiden(adj_mtx_sw_xarxa2)
 modularity_sw_xarxa2 <- modularity(sw_xarxa2, comunitats_sw_xarxa2)
 
 #cliques
-cliques_sw_xarxa2 <- cliques(sw_xarxa2)
+#cliques_sw_xarxa2 <- cliques(sw_xarxa2)
 
 #n nodes
 nEdges_sw_xarxa2 <- gsize(sw_xarxa2)
-cost_sw_xarxa2 <- sum(E(sw_xarxa2)$weight)
+#cost_sw_xarxa2 <- sum(E(sw_xarxa2)$weight)
 nNodes_sw_xarxa2 <- gorder(sw_xarxa2)
 
 #routing efficiency
-am_sw_xarxa2 <- get.adjacency(sw_xarxa2)
-distances_sw_xarxa2 <- distances(sw_xarxa2 , mode = "in", weights=1/E(sw_xarxa2)$weight)
+#am_sw_xarxa2 <- get.adjacency(sw_xarxa2, attr="weight")
+#distances_sw_xarxa2 <- distances(sw_xarxa2 , mode = "in", weights=1/E(sw_xarxa2)$weight)
 
-rout_effs_sw_xarxa2 <- as.numeric(as.bigz(1/distances_sw_xarxa2)/as.bigz(dim(am_sw_xarxa2)[[1]]*(dim(am_sw_xarxa2)[[1]]-1)))
-rout_effs_matrix_sw_xarxa2 <- as.matrix(rout_effs_sw_xarxa2)
-rout_effs_matrix_sw_xarxa2 <- rout_effs_matrix_sw_xarxa2[is.finite(rout_effs_matrix_sw_xarxa2)]
-rout_eff_sw_xarxa2 <- as.numeric(sum(rout_effs_matrix_sw_xarxa2))
+#rout_effs_sw_xarxa2 <- as.numeric(as.bigz(1/distances_sw_xarxa2)/as.bigz(dim(am_sw_xarxa2)[[1]]*(dim(am_sw_xarxa2)[[1]]-1)))
+#rout_effs_matrix_sw_xarxa2 <- as.matrix(rout_effs_sw_xarxa2)
+#rout_effs_matrix_sw_xarxa2 <- rout_effs_matrix_sw_xarxa2[is.finite(rout_effs_matrix_sw_xarxa2)]
+#rout_eff_sw_xarxa2 <- as.numeric(sum(rout_effs_matrix_sw_xarxa2))
 
 #storage capacity
-storage_caps_sw_xarxa2 <- numeric()
-for(j in 1:dim(am_sw_xarxa2)[[1]]){
-  storage_caps_sw_xarxa2 <- append(storage_caps_sw_xarxa2, as.integer(2*log2(chooseZ(as.bigz(sum(am_sw_xarxa2[,j]) + nnzero(am_sw_xarxa2[,j]) -1), as.bigz(sum(am_sw_xarxa2[,j]))))))
-}
-storage_cap_sw_xarxa2 <- mean(storage_caps_sw_xarxa2)#,na.rm=T)
+#storage_caps_sw_xarxa2 <- numeric()
+#for(j in 1:dim(am_sw_xarxa2)[[1]]){
+#  storage_caps_sw_xarxa2 <- append(storage_caps_sw_xarxa2, as.integer(2*log2(chooseZ(as.bigz(sum(am_sw_xarxa2[,j]) + nnzero(am_sw_xarxa2[,j]) -1), as.bigz(sum(am_sw_xarxa2[,j]))))))
+#}
+#storage_cap_sw_xarxa2 <- mean(storage_caps_sw_xarxa2)#,na.rm=T)
 
 celegansSW_data <- list()
 celegansSW_data[["deg_distF_celegansSW"]] <- deg.dist_xarxaF2
@@ -389,12 +387,12 @@ celegansSW_data[["modularity_celegansSW"]] <- modularity_sw_xarxa2
 celegansSW_data[["authority_score_celegansSW"]] <- as_sw_xarxa2 
 celegansSW_data[["communities_celegansSW"]] <- comunitats_sw_xarxa2 
 celegansSW_data[["SW_ratio_celegansSW"]] <- SM_Ratio_sw_xarxa2 
-celegansSW_data[["cliques_celegansSW"]] <- cliques_sw_xarxa2 
-celegansSW_data[["cost_celegansSW"]] <- cost_sw_xarxa2 
+#celegansSW_data[["cliques_celegansSW"]] <- cliques_sw_xarxa2 
+celegansSW_data[["cost_celegansSW"]] <- 19186.000000 
 celegansSW_data[["nEdges_celegansSW"]] <- nEdges_sw_xarxa2
 celegansSW_data[["nNodes_celegansSW"]] <- nNodes_sw_xarxa2 
-celegansSW_data[["rout_eff_celegansSW"]] <- rout_eff_sw_xarxa2 
-celegansSW_data[["storage_cap_celegansSW"]] <- storage_cap_sw_xarxa2
+celegansSW_data[["rout_eff_celegansSW"]] <- 1.869430
+celegansSW_data[["storage_cap_celegansSW"]] <- 82.931731
 
 
 save(celegansSW_data, file="celegansSW_data.RData")
@@ -430,35 +428,35 @@ as_ba_xarxa3 <- authority_score(ba_xarxa3, weights=NA)$vector
 SM_Ratio_ba_xarxa3 = transitivity(ba_xarxa3)/mean_distance(ba_xarxa3)
 
 #modularity y comunitats
-adj_mtx_ba_xarxa3  <- igraph::as_adjacency_matrix(ba_xarxa3)
+adj_mtx_ba_xarxa3  <- igraph::as_adjacency_matrix(ba_xarxa3, attr="weight")
 comunitats_ba_xarxa3 <- leiden(adj_mtx_ba_xarxa3)
 modularity_ba_xarxa3 <- modularity(ba_xarxa3, comunitats_ba_xarxa3)
 
 
 #cliques
-cliques_ba_xarxa3 <- cliques(ba_xarxa3)
+#cliques_ba_xarxa3 <- cliques(ba_xarxa3)
 
 #n nodes
 nEdges_ba_xarxa3 <- gsize(ba_xarxa3)
-cost_ba_xarxa3 <- sum(E(ba_xarxa3)$weight)
+#cost_ba_xarxa3 <- sum(E(ba_xarxa3)$weight)
 nNodes_ba_xarxa3 <- gorder(ba_xarxa3)
 
 #routing efficiency
-am_ba_xarxa3 <- get.adjacency(ba_xarxa3)
-distances_ba_xarxa3 <- distances(ba_xarxa3 , mode = "in", weights=1/E(ba_xarxa3)$weight)
+#am_ba_xarxa3 <- get.adjacency(ba_xarxa3, attr="weight")
+#distances_ba_xarxa3 <- distances(ba_xarxa3 , mode = "in", weights=1/E(ba_xarxa3)$weight)
 
 
-rout_effs_ba_xarxa3 <- as.numeric(as.bigz(1/distances_ba_xarxa3)/as.bigz(dim(am_ba_xarxa3)[[1]]*(dim(am_ba_xarxa3)[[1]]-1)))
-rout_effs_matrix_ba_xarxa3 <- as.matrix(rout_effs_ba_xarxa3)
-rout_effs_matrix_ba_xarxa3 <- rout_effs_matrix_ba_xarxa3[is.finite(rout_effs_matrix_ba_xarxa3)]
-rout_eff_ba_xarxa3 <- as.numeric(sum(rout_effs_matrix_ba_xarxa3))
+#rout_effs_ba_xarxa3 <- as.numeric(as.bigz(1/distances_ba_xarxa3)/as.bigz(dim(am_ba_xarxa3)[[1]]*(dim(am_ba_xarxa3)[[1]]-1)))
+#rout_effs_matrix_ba_xarxa3 <- as.matrix(rout_effs_ba_xarxa3)
+#rout_effs_matrix_ba_xarxa3 <- rout_effs_matrix_ba_xarxa3[is.finite(rout_effs_matrix_ba_xarxa3)]
+#rout_eff_ba_xarxa3 <- as.numeric(sum(rout_effs_matrix_ba_xarxa3))
 
 #storage capacity
-storage_caps_ba_xarxa3 <- numeric()
-for(j in 1:dim(am_ba_xarxa3)[[1]]){
-  storage_caps_ba_xarxa3 <- append(storage_caps_ba_xarxa3, as.integer(2*log2(chooseZ(as.bigz(sum(am_ba_xarxa3[,j]) + nnzero(am_ba_xarxa3[,j]) -1), as.bigz(sum(am_ba_xarxa3[,j]))))))
-}
-storage_cap_sw_xarxa2 <- mean(storage_caps_sw_xarxa2)#,na.rm=T)
+#storage_caps_ba_xarxa3 <- numeric()
+#for(j in 1:dim(am_ba_xarxa3)[[1]]){
+  #storage_caps_ba_xarxa3 <- append(storage_caps_ba_xarxa3, as.integer(2*log2(chooseZ(as.bigz(sum(am_ba_xarxa3[,j]) + nnzero(am_ba_xarxa3[,j]) -1), as.bigz(sum(am_ba_xarxa3[,j]))))))
+  #}
+#storage_cap_ba_xarxa3 <- mean(storage_caps_ba_xarxa3)#,na.rm=T)
 
 celegansBA_data <- list()
 celegansBA_data[["deg_distF_celegansBA"]] <- deg.dist_xarxaF3
@@ -469,12 +467,12 @@ celegansBA_data[["modularity_celegansBA"]] <- modularity_ba_xarxa3
 celegansBA_data[["authority_score_celegansBA"]] <- as_ba_xarxa3
 celegansBA_data[["communities_celegansBA"]] <- comunitats_ba_xarxa3 
 celegansBA_data[["SW_ratio_celegansBA"]] <- SM_Ratio_ba_xarxa3
-celegansBA_data[["cliques_celegansBA"]] <- cliques_ba_xarxa3 
-celegansBA_data[["cost_celegansBA"]] <- cost_ba_xarxa3
+#celegansBA_data[["cliques_celegansBA"]] <- cliques_ba_xarxa3 
+celegansBA_data[["cost_celegansBA"]] <- 17394.000000
 celegansBA_data[["nEdges_celegansBA"]] <- nEdges_ba_xarxa3 
 celegansBA_data[["nNodes_celegansBA"]] <- nNodes_ba_xarxa3 
-celegansBA_data[["rout_eff_celegansBA"]] <- rout_eff_ba_xarxa3 
-celegansBA_data[["storage_cap_celegansBA"]] <- storage_cap_sw_xarxa2 
+celegansBA_data[["rout_eff_celegansBA"]] <- 0.365255  
+celegansBA_data[["storage_cap_celegansBA"]] <- 81.881492
 
 
 save(celegansBA_data, file="celegansBA_data.RData")
@@ -523,3 +521,74 @@ ggplot(df_plot2, aes(x=deg,y=freq,color=type)) +
   scale_x_log10(limits=c(5,100)) +
   geom_smooth(aes(fill=type)) +
   theme_classic()
+
+
+#--------------------------------------------------Crear data---------------------------------------------------------#
+
+
+# Celegans
+
+load("~/BNO/Connectivity_data/celegans_data.RData")
+
+write(celegans_data[["nNodes_celegans"]], file = "networkCelegans.dat", sep = " ")
+
+dadesDeArchiu1 <- get.data.frame(gs)
+dadesDeArchiu1$from <- as.numeric(as.factor(dadesDeArchiu1$from))
+dadesDeArchiu1$to <- as.numeric(as.factor(dadesDeArchiu1$to))
+dadesDeArchiu1$name <- NULL
+
+write.table(dadesDeArchiu1, file = "networkCelegans.dat", sep = " ",append = TRUE,
+            col.names = F,
+            row.names = FALSE)
+
+# celegans ER
+
+load("~/BNO/Connectivity_data/celegansER_data.RData")
+
+write(celegansER_data[["nNodes_celegansER"]], file = "networkCelegansER.dat", sep = " ")
+
+dadesDeArchiuER <- get.data.frame(er_xarxa1)
+dadesDeArchiuER$from <- as.numeric(as.factor(dadesDeArchiuER$from))
+dadesDeArchiuER$to <- as.numeric(as.factor(dadesDeArchiuER$to))
+dadesDeArchiuER$name <- NULL
+
+write.table(dadesDeArchiuER, file = "networkCelegansER.dat", sep = " ",append = TRUE,
+            col.names = F,
+            row.names = FALSE)
+
+
+# celegans SW
+
+
+load("~/BNO/Connectivity_data/celegansSW_data.RData")
+
+write(celegansSW_data[["nNodes_celegansSW"]], file = "networkCelegansSW.dat", sep = " ")
+
+dadesDeArchiuSW <- get.data.frame(sw_xarxa2)
+dadesDeArchiuSW$from <- as.numeric(as.factor(dadesDeArchiuSW$from))
+dadesDeArchiuSW$to <- as.numeric(as.factor(dadesDeArchiuSW$to))
+dadesDeArchiuSW$name <- NULL
+
+write.table(dadesDeArchiuSW, file = "networkCelegansSW.dat", sep = " ",append = TRUE,
+            col.names = F,
+            row.names = FALSE)
+
+# celegans BA
+
+
+load("~/BNO/Connectivity_data/celegansBA_data.RData")
+
+write(celegansBA_data[["nNodes_celegansBA"]], file = "networkCelegansBA.dat", sep = " ")
+
+dadesDeArchiuBA <- get.data.frame(ba_xarxa3)
+dadesDeArchiuBA$from <- as.numeric(as.factor(dadesDeArchiuBA$from))
+dadesDeArchiuBA$to <- as.numeric(as.factor(dadesDeArchiuBA$to))
+dadesDeArchiuBA$name <- NULL
+
+write.table(dadesDeArchiuBA, file = "networkCelegansBA.dat", sep = " ",append = TRUE,
+            col.names = F,
+            row.names = FALSE)
+
+
+
+#-----------------Afegir Routing, storage i cost ----#
